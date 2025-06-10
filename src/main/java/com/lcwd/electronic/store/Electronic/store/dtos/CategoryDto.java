@@ -21,4 +21,6 @@ public class CategoryDto {
     private String description;
     @ImageValidator
     private String coverPage;
+
+
 }

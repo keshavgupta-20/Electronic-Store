@@ -14,7 +14,4 @@ public class ApiResposeClass {
     private String message;
     private HttpStatus status;
     private Boolean success;
-
-
-
 }
