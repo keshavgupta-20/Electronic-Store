@@ -1,5 +1,6 @@
 package com.lcwd.electronic.store.Electronic.store.dtos;
 
+import com.lcwd.electronic.store.Electronic.store.Validate.ImageValidator;
 import jakarta.persistence.Column;
 import lombok.*;
 
@@ -21,5 +22,7 @@ public class Productdtos {
     private int discountedPrice;
     private boolean live;
     private boolean stock;
+    @ImageValidator
+    private String productImage;
 
 }

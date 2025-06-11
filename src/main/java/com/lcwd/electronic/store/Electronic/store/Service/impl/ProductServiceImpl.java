@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.experimental.Helper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +34,9 @@ public class ProductServiceImpl implements ProdcutService {
     private ProductRepo productRepo;
     @Autowired
     private ModelMapper modelMapper;
+
+    @Value("${product.profile.image.path}")
+    private String imagePath;
     @Override
     public Productdtos create(Productdtos productdtos) {
         Product product = modelMapper.map(productdtos, Product.class);
@@ -49,13 +57,18 @@ public class ProductServiceImpl implements ProdcutService {
         product.setQuantity(productdtos.getQuantity());
         product.setLive(productdtos.isLive());
         product.setStock(productdtos.isStock());
+        product.setProductImage(productdtos.getProductImage());
         Product saveproduct = productRepo.save(product);
         return modelMapper.map(saveproduct, Productdtos.class);
     }
 
     @Override
-    public void delete(String productId) {
+    public void delete(String productId) throws IOException {
+
         Product product = productRepo.findById(productId).orElseThrow(()-> new ResourceNotFoundException("Id does not found"));
+        String fullPath = imagePath+product.getProductImage();
+        Path path = Paths.get(fullPath);
+        Files.delete(path);
         productRepo.delete(product);
     }
 
