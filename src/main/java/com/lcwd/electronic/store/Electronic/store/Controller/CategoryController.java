@@ -3,6 +3,7 @@ package com.lcwd.electronic.store.Electronic.store.Controller;
 import com.lcwd.electronic.store.Electronic.store.Entites.User;
 import com.lcwd.electronic.store.Electronic.store.Service.CategoryService;
 import com.lcwd.electronic.store.Electronic.store.Service.FileService;
+import com.lcwd.electronic.store.Electronic.store.Service.ProdcutService;
 import com.lcwd.electronic.store.Electronic.store.Service.impl.CategoryServiceimpl;
 import com.lcwd.electronic.store.Electronic.store.dtos.*;
 import com.lcwd.electronic.store.Electronic.store.repositoreis.CategoryRepo;
@@ -22,12 +23,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.ParameterizedType;
 
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private ProdcutService prodcutService;
 
     @Autowired
     private FileService fileService;
@@ -94,5 +99,39 @@ public class CategoryController {
         StreamUtils.copy(inputStream, response.getOutputStream());
 
     }
+    //create productwithCategory
+    @PostMapping("/{categoryId}/products")
+    public ResponseEntity<Productdtos>createProductWithCategroy(
+            @PathVariable("categoryId") String categoryId, @RequestBody Productdtos productdtos
+    ){
+     Productdtos productdtos1 =    prodcutService.createwithCategory(productdtos, categoryId);
+        return new ResponseEntity<>(productdtos1, HttpStatus.OK);
+    }
+
+    @PutMapping("/{categoryId}/products/{productId}")
+    public  ResponseEntity<Productdtos> updateCategoryofProduct(
+            @PathVariable("categoryId") String categoryId, @PathVariable("productId") String productId
+
+            ){
+        Productdtos productdtos1 = prodcutService.updateCategory(productId, categoryId);
+        return  new ResponseEntity<>(productdtos1, HttpStatus.OK);
+
+    }
+
+    //getproductOfCategory
+    @GetMapping("/{categoryId}/products")
+    public  ResponseEntity<PegeableResponse<Productdtos>> updateCategoryofProduct(
+            @PathVariable("categoryId") String categoryId,
+     @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+    @RequestParam(value = "pageSize", defaultValue = "4", required = false)int pageSize,
+    @RequestParam(value = "sortBy", defaultValue = "title", required = false)String sortBy,
+    @RequestParam(value = "sortDir", defaultValue = "Asc", required = false)String sortDir)
+    {
+        PegeableResponse<Productdtos> productdtos1 = prodcutService.getAllOfCategory(categoryId,pageNumber, pageSize, sortBy, sortDir);
+        return  new ResponseEntity<>(productdtos1, HttpStatus.OK);
+
+    }
+
+
 
 }
