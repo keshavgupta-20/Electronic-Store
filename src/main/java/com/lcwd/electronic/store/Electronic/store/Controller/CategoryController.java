@@ -120,8 +120,7 @@ public class CategoryController {
 
     //getproductOfCategory
     @GetMapping("/{categoryId}/products")
-    public  ResponseEntity<PegeableResponse<Productdtos>> updateCategoryofProduct(
-            @PathVariable("categoryId") String categoryId,
+    public  ResponseEntity<PegeableResponse<Productdtos>> updateCategoryofProduct(@PathVariable("categoryId") String categoryId,
      @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
     @RequestParam(value = "pageSize", defaultValue = "4", required = false)int pageSize,
     @RequestParam(value = "sortBy", defaultValue = "title", required = false)String sortBy,
@@ -131,7 +130,4 @@ public class CategoryController {
         return  new ResponseEntity<>(productdtos1, HttpStatus.OK);
 
     }
-
-
-
 }
