@@ -15,13 +15,17 @@ import com.lcwd.electronic.store.Electronic.store.repositoreis.ProductRepo;
 import com.lcwd.electronic.store.Electronic.store.repositoreis.UserRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.xml.crypto.Data;
+import java.nio.MappedByteBuffer;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-
+@Service
 public class CartServiceImpl implements CartService {
     @Autowired
     private ProductRepo productRepo;
@@ -39,45 +43,55 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDto addItemToCart(String userId, AddItemTOCartRequest request) {
+        String cartId = UUID.randomUUID().toString();
+
         int quantity = request.getQuantity();
-        String  productId = request.getProductId();
-        if (quantity <= 0){
-            throw new BadApiRequest("Requested Entity is not Valid");
-            
+        String productId = request.getProductId();
+
+        if (quantity <= 0) {
+            throw new BadApiRequest("Requested quantity is not valid");
         }
-       Product product =  productRepo.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Given id not found"));
 
-       //fetch the user from the db
-        User user =  userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
-        Cart cart = null;
-       try{
-           cart = cartRepo.findByUser(user).get();
-       }
-       catch (Exception e){
-           cart = new Cart();
-           cart.setCreatedAt(new Date());
+        Product product = productRepo.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Given product ID not found"));
 
-       }
-        //perform cart Operation
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
+
+        Cart cart = cartRepo.findByUser(user).orElseGet(() -> {
+            Cart newCart = new Cart();
+            newCart.setCartId(cartId);
+            newCart.setCreatedAt(new Date());
+            newCart.setUser(user);
+            newCart.setItems(new ArrayList<>());
+            return newCart;
+        });
 
         AtomicReference<Boolean> updated = new AtomicReference<>(false);
-        List<CartItem> itemList = cart.getItems();
-      List<CartItem> updatedItem =  itemList.stream().map(itemLists-> {
-           if (itemLists.getProduct().getProductId().equals(productId)){
-               itemLists.setQuantity(quantity);
-               itemLists.setTotalPrice(quantity * product.getPrice());
-               updated.set(true);
-           }
-           return itemLists;
-       }).collect(Collectors.toList());
-       cart.setItems(updatedItem);
 
-       //create item
-        if (!updated.get()){
-            CartItem cartItem = CartItem.builder().quantity(quantity).totalPrice(quantity * product.getPrice()).cart(cart).product(product).build();
+        List<CartItem> itemList = cart.getItems();
+
+        List<CartItem> updatedItem = itemList.stream().map(item -> {
+            if (item.getProduct().getProductId().equals(productId)) {
+                item.setQuantity(quantity);
+                item.setTotalPrice(quantity * product.getPrice());
+                updated.set(true);
+            }
+            return item;
+        }).collect(Collectors.toList());
+
+        cart.setItems(updatedItem);
+
+        if (!updated.get()) {
+            CartItem cartItem = CartItem.builder()
+                    .quantity(quantity)
+                    .totalPrice(quantity * product.getPrice())
+                    .cart(cart)
+                    .product(product)
+                    .build();
             cart.getItems().add(cartItem);
         }
-        cart.setUser(user);
+
         Cart updatedCart = cartRepo.save(cart);
         return modelMapper.map(updatedCart, CartDto.class);
 
@@ -85,12 +99,23 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void removeItemFromCart(String userId, int cartItem) {
+        //condition
         CartItem cartItem1 =  cartItemRepo.findById(cartItem).orElseThrow(() -> new ResourceNotFoundException("CartItem not found"));
         cartItemRepo.delete(cartItem1);
     }
 
     @Override
     public void clearCart(String userId) {
+        User user =  userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
+        Cart cart = cartRepo.findByUser(user).orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
+        cart.getItems().clear();
+        cartRepo.save(cart);
+    }
 
+    @Override
+    public CartDto getCartByUser(String userId) {
+        User user =  userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
+        Cart cart = cartRepo.findByUser(user).orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
+        return modelMapper.map(cart, CartDto.class);
     }
 }

@@ -71,7 +71,7 @@ public class UserController {
     }
     //getalluser
     @GetMapping
-    public ResponseEntity<PegeableResponse<UserDto>> Alluser(@RequestParam(value = "pageNumber", defaultValue =  "0", required = false)int pageNumber,
+    public ResponseEntity<PegeableResponse<UserDto>> Alluser(@RequestParam(value = "pageNumber", defaultValue =  "1", required = false)int pageNumber,
                                                              @RequestParam(value = "PageSize", defaultValue = "4", required = false)int PageSize,
                                                              @RequestParam(value = "sortBy", defaultValue = "name", required = false)String sortBy,
                                                              @RequestParam(value = "sortDir", defaultValue = "asc", required = false)String sortDir)
