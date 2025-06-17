@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface OrderService {
     //create order
-    OrderDto createOrder(OrderDto orderDto, String userId);
+    OrderDto createOrder(OrderDto orderDto, String userId, String cartId);
 
     void removeOrder(String orderId);
 
