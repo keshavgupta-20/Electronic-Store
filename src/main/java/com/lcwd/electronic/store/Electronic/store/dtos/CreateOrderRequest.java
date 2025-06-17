@@ -17,6 +17,8 @@ public class CreateOrderRequest {
     private String cartId;
     private String userId;
     private String orderStatus ="PENDING";
+
+
     private String paymentStatus= "NOTPAID";
     private String billingAddress;
     private String billingPhone;

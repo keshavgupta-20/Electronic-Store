@@ -1,6 +1,7 @@
 package com.lcwd.electronic.store.Electronic.store.Service;
 
 import com.lcwd.electronic.store.Electronic.store.Entites.Order;
+import com.lcwd.electronic.store.Electronic.store.dtos.CreateOrderRequest;
 import com.lcwd.electronic.store.Electronic.store.dtos.OrderDto;
 import com.lcwd.electronic.store.Electronic.store.dtos.PegeableResponse;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 public interface OrderService {
     //create order
-    OrderDto createOrder(OrderDto orderDto, String userId, String cartId);
+    OrderDto createOrder(CreateOrderRequest request);
 
     void removeOrder(String orderId);
 

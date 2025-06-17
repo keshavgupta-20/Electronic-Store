@@ -4,8 +4,7 @@ import com.lcwd.electronic.store.Electronic.store.Exception.BadApiRequest;
 import com.lcwd.electronic.store.Electronic.store.Exception.ResourceNotFoundException;
 import com.lcwd.electronic.store.Electronic.store.Helpers.helper;
 import com.lcwd.electronic.store.Electronic.store.Service.OrderService;
-import com.lcwd.electronic.store.Electronic.store.dtos.OrderDto;
-import com.lcwd.electronic.store.Electronic.store.dtos.PegeableResponse;
+import com.lcwd.electronic.store.Electronic.store.dtos.*;
 import com.lcwd.electronic.store.Electronic.store.repositoreis.CartRepo;
 import com.lcwd.electronic.store.Electronic.store.repositoreis.OrderItemRepo;
 import com.lcwd.electronic.store.Electronic.store.repositoreis.OrderServiceRepo;
@@ -18,7 +17,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import java.sql.Date;
+
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -41,7 +41,9 @@ public  class OrderServiceImpl implements OrderService {
     private CartRepo cartRepo;
 
     @Override
-    public OrderDto createOrder(OrderDto orderDto, String userId, String cartId) {
+    public OrderDto createOrder(CreateOrderRequest orderDto) {
+        String userId = orderDto.getUserId();
+        String cartId = orderDto.getCartId();
         User user= userRepo.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User does not exist with given id"));
         Cart cart =  cartRepo.findById(cartId).orElseThrow(()-> new ResourceNotFoundException("User does not exist with given id"));
         List<CartItem> cartItems = cart.getItems();
@@ -52,7 +54,7 @@ public  class OrderServiceImpl implements OrderService {
         Order order = Order.builder().billingName(orderDto.getBillingName())
                 .billingPhone((orderDto.getBillingPhone()))
                 .billingAddress(orderDto.getBillingAddress())
-                .orderedDate((Date) orderDto.getOrderedDate())
+                .orderedDate(new Date())
                 .deliveredDate(null)
                 .paymentStatus(orderDto.getPaymentStatus())
                 .orderStatus(orderDto.getOrderStatus())
