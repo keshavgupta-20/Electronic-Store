@@ -16,7 +16,7 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int cartItemId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "product_id")
     @JsonIgnore
     private Product product;
