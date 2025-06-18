@@ -5,10 +5,7 @@ import com.lcwd.electronic.store.Electronic.store.Exception.ResourceNotFoundExce
 import com.lcwd.electronic.store.Electronic.store.Helpers.helper;
 import com.lcwd.electronic.store.Electronic.store.Service.OrderService;
 import com.lcwd.electronic.store.Electronic.store.dtos.*;
-import com.lcwd.electronic.store.Electronic.store.repositoreis.CartRepo;
-import com.lcwd.electronic.store.Electronic.store.repositoreis.OrderItemRepo;
-import com.lcwd.electronic.store.Electronic.store.repositoreis.OrderServiceRepo;
-import com.lcwd.electronic.store.Electronic.store.repositoreis.UserRepo;
+import com.lcwd.electronic.store.Electronic.store.repositoreis.*;
 import lombok.experimental.Helper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +36,8 @@ public  class OrderServiceImpl implements OrderService {
 
     @Autowired
     private CartRepo cartRepo;
+
+
 
     @Override
     public OrderDto createOrder(CreateOrderRequest orderDto) {
@@ -95,7 +94,7 @@ public  class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDto> getOrderOfUser(String userId) {
         User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found !!"));
-        List<User> orders = orderServiceRepo.findByUser(user);
+        List<Order> orders = orderServiceRepo.findByUser(user);
         List<OrderDto> orderDtos = orders.stream().map(order -> mapper.map(order, OrderDto.class)).collect(Collectors.toList());
         return orderDtos;
     }
@@ -108,4 +107,33 @@ public  class OrderServiceImpl implements OrderService {
         Page<Order> page = orderServiceRepo.findAll(pageable);
         return helper.getPageableResponse(page, OrderDto.class);
     }
+
+
+    @Override
+    public OrderDto updateOrderByAdmin(String orderId, AdminUpdateOrder request) {
+        Order order = orderServiceRepo.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found !!"));
+
+        order.setOrderStatus(request.getOrderStatus());
+        order.setPaymentStatus(request.getPaymentStatus());
+        order.setDeliveredDate(request.getDeliveredDate());
+
+        Order updatedOrder = orderServiceRepo.save(order);
+        return mapper.map(updatedOrder, OrderDto.class);
+    }
+    @Override
+    public OrderDto updateOrderByUser(String orderId, UserUpdateOrder request) {
+        Order order = orderServiceRepo.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found !!"));
+
+        order.setBillingName(request.getBillingName());
+        order.setBillingPhone(request.getBillingPhone());
+        order.setBillingAddress(request.getBillingAddress());
+
+        Order updatedOrder = orderServiceRepo.save(order);
+        return mapper.map(updatedOrder, OrderDto.class);
+    }
+
+
+
 }

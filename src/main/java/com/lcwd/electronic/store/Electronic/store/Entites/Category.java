@@ -1,6 +1,7 @@
 package com.lcwd.electronic.store.Electronic.store.Entites;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -18,7 +19,8 @@ public class Category {
     @Column(name = "id")
     private String categoryId;
 
-    @Column(name = "category_title", length = 60, nullable = false)
+    @NotBlank
+    @Column(name = "category_title", length = 20, nullable = false)
     private String title;
     @Column(name = "category_Desc", length = 50)
     private String description;

@@ -1,9 +1,7 @@
 package com.lcwd.electronic.store.Electronic.store.Service;
 
 import com.lcwd.electronic.store.Electronic.store.Entites.Order;
-import com.lcwd.electronic.store.Electronic.store.dtos.CreateOrderRequest;
-import com.lcwd.electronic.store.Electronic.store.dtos.OrderDto;
-import com.lcwd.electronic.store.Electronic.store.dtos.PegeableResponse;
+import com.lcwd.electronic.store.Electronic.store.dtos.*;
 
 import javax.management.OperationsException;
 import java.awt.print.Pageable;
@@ -23,6 +21,8 @@ public interface OrderService {
 
     //order method(logic)related to user
     PegeableResponse<OrderDto> getUser(int pageNumber, int pageSize, String sortBy, String sortDir);
+    OrderDto updateOrderByAdmin(String orderId, AdminUpdateOrder request);
+    OrderDto updateOrderByUser(String orderId, UserUpdateOrder request);
 
 
 }

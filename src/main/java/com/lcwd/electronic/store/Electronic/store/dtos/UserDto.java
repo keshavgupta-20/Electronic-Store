@@ -21,7 +21,7 @@ public class UserDto {
     @Size(min = 3, max = 18, message = "Name is not in proper format")
     public String name;
 
-    @Pattern(regexp = "^[a-z0-9][-a-z0-9._]+@([-a-z0-9]+\\.)+[a-z]{2,5}$",message = "Invalid")
+    @Pattern(regexp = "^[a-z0-9][-a-z0-9._]+@([-a-z0-9]+\\.)+[a-z]{2,5}$",message = "Invalid format")
     @NotBlank(message = "Can't leave blank")
     public   String email;
     @Pattern(

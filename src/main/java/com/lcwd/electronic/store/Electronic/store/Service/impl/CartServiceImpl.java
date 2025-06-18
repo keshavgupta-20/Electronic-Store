@@ -71,7 +71,7 @@ public class CartServiceImpl implements CartService {
 
         List<CartItem> itemList = cart.getItems();
 
-        List<CartItem> updatedItem = itemList.stream().map(item -> {
+       itemList = itemList.stream().map(item -> {
             if (item.getProduct().getProductId().equals(productId)) {
                 item.setQuantity(quantity);
                 item.setTotalPrice(quantity * product.getPrice());
@@ -80,7 +80,8 @@ public class CartServiceImpl implements CartService {
             return item;
         }).collect(Collectors.toList());
 
-        cart.setItems(updatedItem);
+//        cart.setItems(updatedItem);
+
 
         if (!updated.get()) {
             CartItem cartItem = CartItem.builder()
@@ -98,11 +99,20 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void removeItemFromCart(String userId, int cartItem) {
-        //condition
-        CartItem cartItem1 =  cartItemRepo.findById(cartItem).orElseThrow(() -> new ResourceNotFoundException("CartItem not found"));
-        cartItemRepo.delete(cartItem1);
+
+    public void removeItemFromCart(String userId, int cartItemId) {
+        CartItem cartItem = cartItemRepo.findById(cartItemId)
+                .orElseThrow(() -> new ResourceNotFoundException("CartItem not found"));
+
+        Cart cart = cartItem.getCart();
+        if (cart == null || !cart.getUser().getUserId().equals(userId)) {
+            throw new BadApiRequest("Item does not belong to this user's cart.");
+        }
+
+        cart.getItems().removeIf(item -> item.getCartItemId() == cartItemId);
+        cartRepo.save(cart); // this triggers orphanRemoval and deletes the cart item
     }
+
 
     @Override
     public void clearCart(String userId) {

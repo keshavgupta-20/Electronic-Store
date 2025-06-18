@@ -48,7 +48,7 @@ public class CategoryController {
     }
     //update
     @PutMapping("/{categoryId}")
-    public  ResponseEntity<CategoryDto> updateCate(@PathVariable("categoryId") String categoryId, @RequestBody CategoryDto categoryDto){
+    public  ResponseEntity<CategoryDto> updateCate(@Valid@PathVariable("categoryId") String categoryId, @RequestBody CategoryDto categoryDto){
         CategoryDto categoryDto1 = categoryService.update(categoryDto, categoryId);
         return  new ResponseEntity<>(categoryDto1, HttpStatus.OK);
     }
@@ -82,12 +82,12 @@ public class CategoryController {
 
     }
     @PostMapping("/image/{categoryId}")
-    public ResponseEntity<ImageResponse> uploadUserFile(@RequestParam("categoryImage")MultipartFile image, @PathVariable String categoryId) throws IOException {
+    public ResponseEntity<ImageResponse> uploadUserFile(@Valid @RequestParam("categoryImage")MultipartFile image, @PathVariable String categoryId) throws IOException {
         String imageName = fileService.uploadFile(image, imageUploadPath);
         CategoryDto categoryDto = categoryService.getSingle(categoryId);
         categoryDto.setCoverPage(imageName);
         CategoryDto categoryDto1 = categoryService.update(categoryDto, categoryId);
-        ImageResponse imageResponse = ImageResponse.builder().imageName(imageName).success(true).httpStatus(HttpStatus.CREATED).build();
+        ImageResponse imageResponse = ImageResponse.builder().message("Image is inserted successfully").imageName(imageName).success(true).httpStatus(HttpStatus.CREATED).build();
         return new ResponseEntity<>(imageResponse, HttpStatus.CREATED);
     }
     @GetMapping("/image/{categoryId}")

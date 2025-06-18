@@ -45,7 +45,7 @@ public class UserController {
 
     //update
     @PutMapping("/{userId}")
-    public  ResponseEntity<UserDto> updateUser(@PathVariable("userId") String userId, @RequestBody UserDto userDto){
+    public  ResponseEntity<UserDto> updateUser(@Valid @PathVariable("userId") String userId, @RequestBody UserDto userDto){
         UserDto userDto1 = userServices.updateUser(userDto, userId);
         return new ResponseEntity<>(userDto1, HttpStatus.OK);
 
@@ -93,7 +93,7 @@ public class UserController {
         UserDto user = userServices.getUser(userId);
         user.setImageName(imageName);
         UserDto userDto = userServices.updateUser(user, userId);
-        ImageResponse imageResponse = ImageResponse.builder().imageName(imageName).success(true).httpStatus(HttpStatus.CREATED).build();
+        ImageResponse imageResponse = ImageResponse.builder().imageName(imageName).message("Image is inserted properly").success(true).httpStatus(HttpStatus.CREATED).build();
         return new ResponseEntity<>(imageResponse, HttpStatus.CREATED);
 
     }

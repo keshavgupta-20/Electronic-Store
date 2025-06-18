@@ -7,6 +7,7 @@ import com.lcwd.electronic.store.Electronic.store.dtos.ImageResponse;
 import com.lcwd.electronic.store.Electronic.store.dtos.PegeableResponse;
 import com.lcwd.electronic.store.Electronic.store.dtos.Productdtos;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +35,12 @@ public class ProductController {
     private String imageUploadPath;
     //create
     @PostMapping
-    public ResponseEntity<Productdtos> createProdcut(@RequestBody Productdtos productdtos){
+    public ResponseEntity<Productdtos> createProdcut(@Valid @RequestBody Productdtos productdtos){
         Productdtos created = prodcutService.create(productdtos);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
     @PutMapping("/{productId}")
-    public ResponseEntity<Productdtos> updateProduct(@PathVariable String productId, @RequestBody Productdtos productdtos){
+    public ResponseEntity<Productdtos> updateProduct(@Valid @PathVariable String productId, @RequestBody Productdtos productdtos){
         Productdtos updated = prodcutService.update( productdtos, productId);
         return new ResponseEntity<>(updated, HttpStatus.OK);
 
