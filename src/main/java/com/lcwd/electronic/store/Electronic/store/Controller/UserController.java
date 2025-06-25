@@ -37,6 +37,7 @@ public class UserController {
     private String imageUploadPath;
     private Logger logger = LoggerFactory.getLogger(UserController.class);
     //create
+
     @PostMapping
     public ResponseEntity<UserDto> createUser(@Valid  @RequestBody UserDto userDto){
         UserDto userDto1 = userServices.create_User(userDto);

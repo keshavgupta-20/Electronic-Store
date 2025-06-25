@@ -7,6 +7,7 @@ import com.lcwd.electronic.store.Electronic.store.dtos.CartDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,11 +16,14 @@ public class CartController {
     @Autowired
     private CartService cart;
 
+
     @PostMapping("/{userId}")
     public ResponseEntity<CartDto> addItemTocart(@PathVariable String userId, @RequestBody AddItemTOCartRequest addItemTOCartRequest){
         CartDto cartDto = cart.addItemToCart(userId,addItemTOCartRequest);
         return new ResponseEntity<>(cartDto, HttpStatus.OK);
     }
+
+
     @DeleteMapping("/{userId}/items/{itemId}")
     public ResponseEntity<ApiResposeClass> removeItemToCart(@PathVariable String userId, @PathVariable int itemId){
         cart.removeItemFromCart(userId, itemId);
@@ -28,6 +32,7 @@ public class CartController {
     }
 
     //clearcart
+
     @DeleteMapping("/{userId}")
     public ResponseEntity<ApiResposeClass> clearCart(@PathVariable String userId){
         cart.clearCart(userId);
