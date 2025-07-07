@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Optional;
-
 @SpringBootTest
 class ElectronicStoreApplicationTests {
 	@Autowired
@@ -28,7 +26,10 @@ class ElectronicStoreApplicationTests {
 		System.out.println(jwtHelper.getUserFromToken(token));
 		System.out.println(jwtHelper.isTokenExpired(token));
 		System.out.println(jwtHelper.getExpirationDateFromToken(token));
-//		System.out.println("Testing jwt Token");
 		System.out.println();
+	}
+	@Test
+	void Testing(){
+		System.out.println("Helo");
 	}
 }

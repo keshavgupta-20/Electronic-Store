@@ -2,11 +2,14 @@ package com.lcwd.electronic.store.Electronic.store.Service.impl;
 
 import com.lcwd.electronic.store.Electronic.store.Exception.ResourceNotFoundException;
 import com.lcwd.electronic.store.Electronic.store.repositoreis.UserRepo;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CustomerUserDetailService  implements UserDetailsService {
   @Autowired
    private UserRepo userRepo;
