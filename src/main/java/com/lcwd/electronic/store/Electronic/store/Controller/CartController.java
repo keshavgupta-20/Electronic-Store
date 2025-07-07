@@ -22,7 +22,6 @@ public class CartController {
         return new ResponseEntity<>(cartDto, HttpStatus.OK);
     }
 
-
     @DeleteMapping("/{userId}/items/{itemId}")
     public ResponseEntity<ApiResposeClass> removeItemToCart(@PathVariable String userId, @PathVariable int itemId){
         cart.removeItemFromCart(userId, itemId);
