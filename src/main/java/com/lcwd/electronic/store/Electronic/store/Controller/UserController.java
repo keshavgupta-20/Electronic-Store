@@ -4,6 +4,7 @@ import com.lcwd.electronic.store.Electronic.store.Service.FileService;
 import com.lcwd.electronic.store.Electronic.store.Service.UserServices;
 import com.lcwd.electronic.store.Electronic.store.dtos.ImageResponse;
 import com.lcwd.electronic.store.Electronic.store.dtos.PegeableResponse;
+import com.lcwd.electronic.store.Electronic.store.dtos.RegisterUser;
 import com.lcwd.electronic.store.Electronic.store.dtos.UserDto;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -14,7 +15,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StreamUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/user")
 public class UserController {
     @Autowired
@@ -36,10 +40,18 @@ public class UserController {
     private Logger logger = LoggerFactory.getLogger(UserController.class);
     //create
 
-    @PostMapping
-    public ResponseEntity<UserDto> createUser(@Valid  @RequestBody UserDto userDto){
-        UserDto userDto1 = userServices.create_User(userDto);
-        return new ResponseEntity<>(userDto1, HttpStatus.CREATED);
+    @PostMapping("/do-register")
+    public String createUser(@Valid @ModelAttribute("registerUser")RegisterUser registerUser, BindingResult bindingResult,
+                             @RequestParam("repassword") String repassword,Model model){
+        if (bindingResult.hasErrors()){
+            return "Register";
+        }
+        if (!registerUser.getPassword().equals(repassword)) {
+            model.addAttribute("passwordMismatch", "Passwords do not match");
+            return "Register";
+        }
+        UserDto userDto1 = userServices.create_User(registerUser);
+        return "redirect:/ElectroHub/";
     }
 
     //update

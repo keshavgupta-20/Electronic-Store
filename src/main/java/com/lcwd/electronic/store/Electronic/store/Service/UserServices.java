@@ -1,6 +1,7 @@
 package com.lcwd.electronic.store.Electronic.store.Service;
 
 import com.lcwd.electronic.store.Electronic.store.dtos.PegeableResponse;
+import com.lcwd.electronic.store.Electronic.store.dtos.RegisterUser;
 import com.lcwd.electronic.store.Electronic.store.dtos.UserDto;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +11,7 @@ import java.util.List;
 @Component
 public interface UserServices {
     // create
-    UserDto create_User(UserDto userdto);
+    UserDto create_User(RegisterUser registerUser);
 
     //update
     UserDto updateUser(UserDto userDto, String userId);

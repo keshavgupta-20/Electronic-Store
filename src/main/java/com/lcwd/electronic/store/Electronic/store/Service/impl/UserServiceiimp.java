@@ -6,6 +6,7 @@ import com.lcwd.electronic.store.Electronic.store.Exception.ResourceNotFoundExce
 import com.lcwd.electronic.store.Electronic.store.Helpers.helper;
 import com.lcwd.electronic.store.Electronic.store.Service.UserServices;
 import com.lcwd.electronic.store.Electronic.store.dtos.PegeableResponse;
+import com.lcwd.electronic.store.Electronic.store.dtos.RegisterUser;
 import com.lcwd.electronic.store.Electronic.store.dtos.UserDto;
 import com.lcwd.electronic.store.Electronic.store.repositoreis.RoleRepo;
 import com.lcwd.electronic.store.Electronic.store.repositoreis.UserRepo;
@@ -48,11 +49,11 @@ public class UserServiceiimp implements UserServices {
     Logger logger = LoggerFactory.getLogger(UserServiceiimp.class);
 
     @Override
-    public UserDto create_User(UserDto userdto) {
+    public UserDto create_User(RegisterUser registerUser) {
 
         String userId = UUID.randomUUID().toString();
-        userdto.setUserId(userId);
-        User user =  dtotoEntity(userdto);
+        registerUser.setUserId(userId);
+        User user =  mapper.map(registerUser, User.class);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         Role role = new Role();
         role.setRoleId(UUID.randomUUID().toString());
