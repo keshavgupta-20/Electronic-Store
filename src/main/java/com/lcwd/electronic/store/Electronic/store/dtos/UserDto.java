@@ -6,12 +6,16 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDto {
+public class UserDto implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     public   String UserId;
     @Size(min = 3, max = 18, message = "Name is not in proper format")
     public String name;
@@ -30,8 +34,10 @@ public class UserDto {
 
     @NotBlank
     public   String about;
-    @ImageValidator
+
     public String imageName;
+    private boolean emailVerified = false;
+    private boolean phoneVerified = false;
 
     public String getUserId() {
         return UserId;

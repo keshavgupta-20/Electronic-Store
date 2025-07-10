@@ -1,496 +1,61 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ElectroHub - Premium Electronics Store</title>
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            --primary-color: #2563eb;
-            --secondary-color: #3b82f6;
-            --accent-color: #06b6d4;
-            --dark-color: #1e293b;
-            --light-gray: #f8fafc;
-            --border-color: #e2e8f0;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
-            color: var(--dark-color);
-            background-color: #ffffff;
-        }
-
-        /* Hero Carousel Enhancements */
-        .hero-carousel {
-            position: relative;
-            margin-top: 70px;
-            border-radius: 0 0 20px 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .carousel-item img {
-            height: 500px;
-            object-fit: cover;
-            filter: brightness(0.9);
-        }
-
-        .carousel-control-prev,
-        .carousel-control-next {
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
-            top: 50%;
-            transform: translateY(-50%);
-            opacity: 0.8;
-            transition: all 0.3s ease;
-        }
-
-        .carousel-control-prev {
-            left: 30px;
-        }
-
-        .carousel-control-next {
-            right: 30px;
-        }
-
-        .carousel-control-prev:hover,
-        .carousel-control-next:hover {
-            opacity: 1;
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .carousel-control-prev-icon,
-        .carousel-control-next-icon {
-            background-color: var(--primary-color);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-        }
-
-        /* Carousel Indicators */
-        .carousel-indicators {
-            bottom: 20px;
-        }
-
-        .carousel-indicators [data-bs-target] {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.5);
-            border: 2px solid white;
-            transition: all 0.3s ease;
-        }
-
-        .carousel-indicators .active {
-            background-color: var(--primary-color);
-            transform: scale(1.2);
-        }
-
-        /* Section Styling */
-        .categories-section {
-            padding: 80px 0;
-            background: linear-gradient(135deg, var(--light-gray) 0%, #ffffff 100%);
-        }
-
-        .section-title {
-            position: relative;
-            margin-bottom: 60px;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--dark-color);
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 4px;
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            border-radius: 2px;
-        }
-
-        .section-title p {
-            font-size: 1.1rem;
-            color: #6b7280;
-            margin-bottom: 0;
-        }
-
-        /* Category Cards */
-        .category-card {
-            border: none;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            background: white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            height: 100%;
-            position: relative;
-        }
-
-        .category-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .category-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .category-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .category-card .card-body {
-            padding: 30px 20px;
-            text-align: center;
-        }
-
-        .category-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px;
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .category-icon::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
-            transform: translate(-50%, -50%);
-        }
-
-        .category-icon img {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-            filter: brightness(0) invert(1);
-            z-index: 1;
-        }
-
-        .category-icon i {
-            font-size: 2rem;
-            color: white;
-            z-index: 1;
-        }
-
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--dark-color);
-            margin-bottom: 10px;
-        }
-
-        .card-text {
-            font-size: 0.9rem;
-            color: #6b7280;
-            line-height: 1.5;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .carousel-item img {
-                height: 300px;
-            }
-
-            .carousel-control-prev,
-            .carousel-control-next {
-                width: 40px;
-                height: 40px;
-            }
-
-            .carousel-control-prev {
-                left: 15px;
-            }
-
-            .carousel-control-next {
-                right: 15px;
-            }
-
-            .section-title h2 {
-                font-size: 2rem;
-            }
-
-            .categories-section {
-                padding: 60px 0;
-            }
-
-            .category-card .card-body {
-                padding: 25px 15px;
-            }
-
-            .category-icon {
-                width: 60px;
-                height: 60px;
-                margin-bottom: 15px;
-            }
-
-            .category-icon img {
-                width: 30px;
-                height: 30px;
-            }
-
-            .category-icon i {
-                font-size: 1.5rem;
-            }
-        }
-
-        /* Animation */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .category-card {
-            animation: fadeInUp 0.6s ease forwards;
-        }
-
-        .category-card:nth-child(1) { animation-delay: 0.1s; }
-        .category-card:nth-child(2) { animation-delay: 0.2s; }
-        .category-card:nth-child(3) { animation-delay: 0.3s; }
-        .category-card:nth-child(4) { animation-delay: 0.4s; }
-        .category-card:nth-child(5) { animation-delay: 0.5s; }
-        .category-card:nth-child(6) { animation-delay: 0.6s; }
-
-        /* Loading State */
-        .category-card.loading {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-
-        @keyframes loading {
-            0% {
-                background-position: 200% 0;
-            }
-            100% {
-                background-position: -200% 0;
-            }
-        }
-    </style>
+    <title>Title</title>
 </head>
-
 <body>
 <div th:replace="NavBar::layout(~{::section})"></div>
 
 <section>
-    <!-- Enhanced Hero Carousel -->
-    <div id="carouselExample" class="carousel slide carousel-fade hero-carousel" data-bs-ride="carousel" data-bs-interval="4000">
-        <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="0" class="active"></button>
-            <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="1"></button>
-            <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="2"></button>
-        </div>
 
+    <div id="carouselExample" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000" style="margin-top: 70px;">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="img/ecom1.png" class="d-block w-100" alt="Latest Electronics Collection">
+                <img src="img/ecom1.png" class="d-block w-100" alt="Banner 1">
             </div>
             <div class="carousel-item">
-                <img src="img/ecom.png" class="d-block w-100" alt="Premium Gadgets">
+                <img src="img/ecom.png" class="d-block w-100" alt="Banner 2">
             </div>
             <div class="carousel-item">
-                <img src="img/ecom2.jpg" class="d-block w-100" alt="Smart Home Solutions">
+                <img src="img/ecom2.jpg" class="d-block w-100" alt="Banner 3">
             </div>
         </div>
-
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
             <span class="carousel-control-prev-icon"></span>
-            <span class="visually-hidden">Previous</span>
         </button>
         <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
             <span class="carousel-control-next-icon"></span>
-            <span class="visually-hidden">Next</span>
         </button>
     </div>
 
-    <!-- Enhanced Categories Section -->
-    <div class="categories-section">
-        <div class="container">
-            <div class="section-title text-center">
-                <h2>Shop Electronics by Category</h2>
-                <p>Discover the latest technology and premium electronics from top brands</p>
-            </div>
+    <!-- Categories Section -->
+    <div class="container my-5">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Shop Electronics by Category</h2>
+            <p class="text-muted">Discover the latest technology and electronics</p>
+        </div>
 
-            <div class="row g-4">
-                <!-- Default categories when no data is available -->
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6" th:if="${categories == null or categories.isEmpty()}">
-                    <div class="card category-card">
-                        <div class="card-body">
-                            <div class="category-icon">
-                                <i class="bi bi-phone"></i>
-                            </div>
-                            <h6 class="card-title">Smartphones</h6>
-                            <small class="card-text">Latest mobile devices</small>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6" th:if="${categories == null or categories.isEmpty()}">
-                    <div class="card category-card">
-                        <div class="card-body">
-                            <div class="category-icon">
-                                <i class="bi bi-laptop"></i>
-                            </div>
-                            <h6 class="card-title">Laptops</h6>
-                            <small class="card-text">Computing solutions</small>
+        <div class="row g-4">
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6" th:each="cat : ${categories}">
+                <div class="card text-center category-card shadow-sm">
+                    <div class="card-body">
+                        <div class="category-icon mb-2">
+                            <img th:src="@{${cat.imageUrl}}" alt="Category Image" class="img-fluid" style="width: 40px; height: 40px;" />
                         </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6" th:if="${categories == null or categories.isEmpty()}">
-                    <div class="card category-card">
-                        <div class="card-body">
-                            <div class="category-icon">
-                                <i class="bi bi-headphones"></i>
-                            </div>
-                            <h6 class="card-title">Audio</h6>
-                            <small class="card-text">Premium sound</small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6" th:if="${categories == null or categories.isEmpty()}">
-                    <div class="card category-card">
-                        <div class="card-body">
-                            <div class="category-icon">
-                                <i class="bi bi-camera"></i>
-                            </div>
-                            <h6 class="card-title">Cameras</h6>
-                            <small class="card-text">Capture memories</small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6" th:if="${categories == null or categories.isEmpty()}">
-                    <div class="card category-card">
-                        <div class="card-body">
-                            <div class="category-icon">
-                                <i class="bi bi-smartwatch"></i>
-                            </div>
-                            <h6 class="card-title">Wearables</h6>
-                            <small class="card-text">Smart accessories</small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6" th:if="${categories == null or categories.isEmpty()}">
-                    <div class="card category-card">
-                        <div class="card-body">
-                            <div class="category-icon">
-                                <i class="bi bi-house-gear"></i>
-                            </div>
-                            <h6 class="card-title">Smart Home</h6>
-                            <small class="card-text">Home automation</small>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dynamic categories from backend -->
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6" th:each="cat : ${categories}">
-                    <div class="card category-card">
-                        <div class="card-body">
-                            <div class="category-icon">
-                                <img th:src="@{${cat.imageUrl}}" th:alt="${cat.name}" class="img-fluid" />
-                            </div>
-                            <h6 class="card-title" th:text="${cat.name}">Category Name</h6>
-                            <small class="card-text" th:text="${cat.description}">Category Description</small>
-                        </div>
+                        <h6 class="card-title" th:text="${cat.name}">Category Name</h6>
+                        <small class="text-muted" th:text="${cat.description}">Category Description</small>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+        </div>
 
-    <!-- Bootstrap JavaScript -->
+
+        <!-- Bootstrap JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Custom JavaScript -->
-    <script>
-        // Add smooth scrolling and enhanced interactions
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add hover effects to category cards
-            const categoryCards = document.querySelectorAll('.category-card');
-
-            categoryCards.forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-10px) scale(1.02)';
-                });
-
-                card.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0) scale(1)';
-                });
-            });
-
-            // Add click handlers for category cards
-            categoryCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    const categoryName = this.querySelector('.card-title').textContent;
-                    console.log('Category clicked:', categoryName);
-                    // Add your navigation logic here
-                });
-            });
-
-            // Pause carousel on hover
-            const carousel = document.getElementById('carouselExample');
-            carousel.addEventListener('mouseenter', function() {
-                bootstrap.Carousel.getInstance(carousel).pause();
-            });
-
-            carousel.addEventListener('mouseleave', function() {
-                bootstrap.Carousel.getInstance(carousel).cycle();
-            });
-        });
-    </script>
 </section>
 </body>
 </html>

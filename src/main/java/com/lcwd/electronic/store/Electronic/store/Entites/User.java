@@ -43,6 +43,9 @@ public class User implements UserDetails {
 
     private String imageName;
 
+    private boolean emailVerified = false;
+    private boolean phoneVerified = false;
+
     @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Role> roles = new ArrayList<>();
 

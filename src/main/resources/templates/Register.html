@@ -17,12 +17,12 @@
 <!-- Navbar -->
 <div th:replace="NavBar::layout(~{::section})"></div>
 
-<section class="pt-2 mt-2">
+<section class="mt-1 pt-1">
   <div class="container d-flex justify-content-center align-items-center min-vh-100">
     <div class="bg-white shadow-lg rounded-4 p-5 w-100" style="max-width: 500px;">
       <h2 class="text-center mb-4 font-bold text-3xl">Create Account</h2>
 
-      <form th:action="@{/user/do-register}" method="post" th:object="${registerUser}">
+      <form th:action="@{/ElectroHub/user/do-register}" method="post" th:object="${registerUser}">
 
         <!-- Global password mismatch error -->
         <div th:if="${passwordMismatch}" class="text-danger mb-3" th:text="${passwordMismatch}"></div>
@@ -78,23 +78,6 @@
         <div class="d-grid mb-4">
           <button type="submit" class="btn btn-dark text-white py-2">Register</button>
         </div>
-
-        <!-- Divider -->
-        <div class="text-center text-muted mb-3">OR</div>
-
-        <!-- Social Login Buttons -->
-        <div class="d-grid gap-2">
-          <button type="button" class="btn d-flex align-items-center justify-content-center bg-light border shadow-sm py-2 rounded-3">
-            <img src="https://www.svgrepo.com/show/475656/google-color.svg" width="20" height="20" class="me-2">
-            <span class="text-dark">Login with Google</span>
-          </button>
-
-          <button type="button" class="btn d-flex align-items-center justify-content-center bg-light border shadow-sm py-2 rounded-3">
-            <img src="https://www.svgrepo.com/show/512317/github-142.svg" width="20" height="20" class="me-2">
-            <span class="text-dark">Login with GitHub</span>
-          </button>
-        </div>
-
       </form>
     </div>
   </div>

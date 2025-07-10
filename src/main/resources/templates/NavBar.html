@@ -8,46 +8,44 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <style>
-        .navbar {
-            background-color: #343a40;
-        }
 
-        .navbar .nav-link {
-            color: white !important;
-        }
 
-        .navbar .nav-link:hover {
-            color: #ffc107 !important;
-        }
-
-        .cart-badge {
-            background-color: red;
-            color: white;
-            border-radius: 50%;
-            padding: 2px 6px;
-            font-size: 12px;
-            position: absolute;
-            top: 2px;
-            right: 0;
-        }
-
-        .profile-dropdown .dropdown-menu {
-            right: 0;
-            left: auto;
-        }
-
-        .profile-name {
-            color: white;
-            text-transform: capitalize;
-        }
-
-        .dropdown-toggle::after {
-            margin-left: 0.35rem;
-        }
-        html, body {
-  height: 100%;
-  overflow-y: auto;
+        /* Ensure body content isn't hidden behind fixed navbar */
+body {
+padding-top: 70px; /* Adjust if your navbar height is different */
+overflow-y: auto;
 }
+
+/* Prevent any content area from hiding dropdowns */
+main, .container, .wrapper, .content {
+overflow: visible !important;
+position: relative;
+z-index: 1;
+}
+
+/* Navbar stays fixed and on top */
+.navbar {
+background-color: #343a40;
+z-index: 1050;
+position: fixed;
+top: 0;
+width: 100%;
+}
+
+/* Dropdown menu floats and appears on hover */
+.dropdown-menu {
+z-index: 2000 !important;
+position: absolute;
+display: none;
+}
+
+/* Show dropdown when hovered (desktop-friendly) */
+.nav-item.dropdown:hover .dropdown-menu {
+display: block;
+}
+
+
+
     </style>
 </head>
 <body>
@@ -126,13 +124,13 @@
             <!-- Right Nav -->
             <ul class="navbar-nav mb-2 mb-lg-0">
                 <li class="nav-item position-relative">
-                    <a class="nav-link cart-link" href="/cart" aria-label="Shopping Cart">
+                    <a class="nav-link cart-link" href="/ElectroHub/cart" aria-label="Shopping Cart">
                         <i class="fas fa-shopping-cart me-1"></i> Cart
                         <span class="cart-badge">0</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/wishlist">
+                    <a class="nav-link" href="/ElectroHub/wishlist">
                         <i class="fas fa-heart me-1"></i> Wishlist
                     </a>
                 </li>
@@ -160,7 +158,7 @@
                         <li><a class="dropdown-item" href="/profile">
                             <i class="fas fa-user me-2"></i> Account
                         </a></li>
-                        <li><a class="dropdown-item" href="/logout">
+                        <li><a class="dropdown-item" href="/do-logout">
                             <i class="fas fa-sign-out-alt me-2"></i> Logout
                         </a></li>
                     </ul>

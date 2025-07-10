@@ -4,7 +4,6 @@ import com.lcwd.electronic.store.Electronic.store.Service.FileService;
 import com.lcwd.electronic.store.Electronic.store.Service.UserServices;
 import com.lcwd.electronic.store.Electronic.store.dtos.ImageResponse;
 import com.lcwd.electronic.store.Electronic.store.dtos.PegeableResponse;
-import com.lcwd.electronic.store.Electronic.store.dtos.RegisterUser;
 import com.lcwd.electronic.store.Electronic.store.dtos.UserDto;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -27,7 +26,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/ElectroHub/user")
 public class UserController {
     @Autowired
     private UserServices userServices;
@@ -41,16 +40,16 @@ public class UserController {
     //create
 
     @PostMapping("/do-register")
-    public String createUser(@Valid @ModelAttribute("registerUser")RegisterUser registerUser, BindingResult bindingResult,
+    public String createUser(@Valid @ModelAttribute("registerUser")UserDto userDto, BindingResult bindingResult,
                              @RequestParam("repassword") String repassword,Model model){
         if (bindingResult.hasErrors()){
             return "Register";
         }
-        if (!registerUser.getPassword().equals(repassword)) {
+        if (!userDto.getPassword().equals(repassword)) {
             model.addAttribute("passwordMismatch", "Passwords do not match");
             return "Register";
         }
-        UserDto userDto1 = userServices.create_User(registerUser);
+        UserDto userDto1 = userServices.create_User(userDto);
         return "redirect:/ElectroHub/";
     }
 
