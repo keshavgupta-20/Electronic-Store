@@ -15,13 +15,14 @@ public class ImageNameValidator implements ConstraintValidator<ImageValidator, S
     }
 
     @Override
-    public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        logger.info("Message from isValid : {}", s);
-        if (s.isBlank()){
-            return false;
+    public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
+        logger.info("Message from isValid : {}", value);
+        if (value == null || value.isBlank()) {
+            return false; // or true, depending on whether null is acceptable
         }
-        else{
-        return true;
-        }
+
+        // Continue with image name validation logic
+        return value.endsWith(".jpg") || value.endsWith(".png") || value.endsWith(".jpeg");
+
     }
 }

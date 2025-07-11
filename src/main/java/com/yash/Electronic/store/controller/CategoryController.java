@@ -1,5 +1,6 @@
 package com.yash.Electronic.store.controller;
 
+import com.yash.Electronic.store.entites.Category;
 import com.yash.Electronic.store.service.CategoryService;
 import com.yash.Electronic.store.service.FileService;
 import com.yash.Electronic.store.service.ProdcutService;
@@ -16,7 +17,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.util.StreamUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,7 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("/ElectroHub/admin/category/add")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
@@ -39,10 +42,21 @@ public class CategoryController {
     private String imageUploadPath;
     private Logger logger = LoggerFactory.getLogger(CategoryController.class);
     //create
-    @PostMapping
-    public ResponseEntity<CategoryDto> createCategory(@Valid  @RequestBody CategoryDto categoryDto){
-        CategoryDto categoryDto1 = categoryService.create(categoryDto);
-        return  new ResponseEntity<>(categoryDto1, HttpStatus.CREATED);
+    @PostMapping("/save")
+    public String createCategory(@Valid @ModelAttribute("category") CategoryDto category,
+    BindingResult result, @RequestParam("coverPage") MultipartFile coverImages, Model model) throws IOException {
+
+        // Validate image (you can replace this with your @ImageValidator logic)
+        if (coverImages.isEmpty() || !coverImages.getContentType().startsWith("image/")) {
+            System.out.println("Hey");
+            model.addAttribute("imageError", "Please upload a valid image.");
+            return "add-category";
+        }
+        String imageName = fileService.uploadFile(coverImages, imageUploadPath);
+
+        category.setCoverPage(imageName);
+        CategoryDto categoryDto =  categoryService.create(category);
+        return "redirect:/categories";
     }
     //update
     @PutMapping("/{categoryId}")

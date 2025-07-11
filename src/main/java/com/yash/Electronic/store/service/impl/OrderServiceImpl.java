@@ -50,44 +50,46 @@ public  class OrderServiceImpl implements OrderService {
     public OrderDto createOrder(CreateOrderRequest orderDto) {
         String userId = orderDto.getUserId();
         String cartId = orderDto.getCartId();
-        User user= userRepo.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User does not exist with given id"));
-        Cart cart =  cartRepo.findById(cartId).orElseThrow(()-> new ResourceNotFoundException("User does not exist with given id"));
+        User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User does not exist with given id"));
+        Cart cart = cartRepo.findById(cartId).orElseThrow(() -> new ResourceNotFoundException("User does not exist with given id"));
         List<CartItem> cartItems = cart.getItems();
-        if (cartItems.size()<=0){
+        if (cartItems.size() <= 0) {
             throw new BadApiRequest("Invalid number of item in the cart");
         }
         //other checks
-        Order order = Order.builder().billingName(orderDto.getBillingName())
-                .billingPhone((orderDto.getBillingPhone()))
-                .billingAddress(orderDto.getBillingAddress())
-                .orderedDate(new Date())
-                .deliveredDate(null)
-                .paymentStatus(orderDto.getPaymentStatus())
-                .orderStatus(orderDto.getOrderStatus())
-                .orderId(UUID.randomUUID().toString())
-                .user(user).build();
-        AtomicReference<Integer> orderAmount = new AtomicReference<>(0);
-        List<OrderItem> orderItems = cartItems.stream().map(cartItem -> {
-//            CartItem->OrderItem
-            OrderItem orderItem = OrderItem.builder()
-                    .quantity(cartItem.getQuantity())
-                    .product(cartItem.getProduct())
-                    .totalPrice(cartItem.getQuantity() * cartItem.getProduct().getDiscountedPrice())
-                    .order(order)
-                    .build();
-
-            orderAmount.set(orderAmount.get() + orderItem.getTotalPrice());
-            return orderItem;
-        }).collect(Collectors.toList());
-
-        order.setOrderItems(orderItems);
-        order.setOrderAmount(orderAmount.get());
-
-        //
-        cart.getItems().clear();
-        cartRepo.save(cart);
-        Order savedOrder = orderServiceRepo.save(order);
-        return mapper.map(savedOrder, OrderDto.class);
+//        Order order = Order.builder().billingName(orderDto.getBillingName())
+//                .billingPhone((orderDto.getBillingPhone()))
+//                .billingAddress(orderDto.getBillingAddress())
+//                .orderedDate(new Date())
+//                .deliveredDate(null)
+//                .paymentStatus(orderDto.getPaymentStatus())
+//                .orderStatus(orderDto.getOrderStatus())
+//                .orderId(UUID.randomUUID().toString())
+//                .user(user).build();
+//        AtomicReference<Integer> orderAmount = new AtomicReference<>(0);
+//        List<OrderItem> orderItems = cartItems.stream().map(cartItem -> {
+////            CartItem->OrderItem
+//            OrderItem orderItem = OrderItem.builder()
+//                    .quantity(cartItem.getQuantity())
+//                    .product(cartItem.getProduct())
+//                    .totalPrice(cartItem.getQuantity() * cartItem.getProduct().getDiscountedPrice())
+//                    .order(order)
+//                    .build();
+//
+//            orderAmount.set(orderAmount.get() + orderItem.getTotalPrice());
+//            return orderItem;
+//        }).collect(Collectors.toList());
+//
+//        order.setOrderItems(orderItems);
+//        order.setOrderAmount(orderAmount.get());
+//
+//        //
+//        cart.getItems().clear();
+//        cartRepo.save(cart);
+//        Order savedOrder = orderServiceRepo.save(order);
+//        return mapper.map(savedOrder, OrderDto.class);
+//    }
+        return mapper.map(orderDto, OrderDto.class);
     }
 
     @Override

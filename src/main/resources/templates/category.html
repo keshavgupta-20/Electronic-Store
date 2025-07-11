@@ -85,7 +85,7 @@
 <section class="content-wrapper">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>All Categories</h2>
-        <a href="@{/ElectroHub/admin/category/add-category}" class="btn btn-primary">
+        <a th:href="@{/ElectroHub/admin/category/add-category}" class="btn btn-primary">
             <i class="fas fa-plus"></i> Add Category
         </a>
     </div>
@@ -95,8 +95,6 @@
         <tr>
             <th>Category ID</th>
             <th>Title</th>
-            <th>Description</th>
-            <th>Cover Page</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -104,10 +102,6 @@
         <tr th:each="category : ${categories}">
             <td th:text="${category.categoryId}">C001</td>
             <td th:text="${category.title}">Electronics</td>
-            <td th:text="${category.description}">All electronic items</td>
-            <td>
-                <img th:src="@{'/images/' + ${category.coverPage}}" alt="Cover" class="cover-image">
-            </td>
             <td class="action-btns">
                 <a th:href="@{'/categories/edit/' + ${category.categoryId}}" class="btn btn-warning btn-sm">
                     <i class="fas fa-edit"></i> Edit
