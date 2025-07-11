@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymealeaf.org" th:fragment="layout(content)">>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .sidebar.collapsed {
+      width: 70px;
+    }
+    .badge {
+  background-color: #ffc107;
+  color: #343a40;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-left: auto;
+  font-weight: bold;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.sidebar.collapsed .nav-link span,
+.sidebar.collapsed .brand-text,
+.sidebar.collapsed .badge {
+  display: none;
+}
+
+#mainContent.expanded {
+  margin-left: 70px; /* adjust according to your layout */
+}
+
+    .sidebar.collapsed .nav-link span,
+    .sidebar.collapsed .brand-text,
+    .sidebar.collapsed .badge {
+      display: none;
+    }
+
+    #mainContent.expanded {
+      margin-left: 70px; /* adjust according to your layout */
+    }
+
+      /* SIDEBAR STYLES */
+      .sidebar {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      height: calc(100vh - 70px);
+      width: 280px;
+      background: linear-gradient(135deg, #343a40 0%, #2c3136 100%);
+      color: white;
+      overflow-y: auto;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      z-index: 1000;
+      }
+
+      .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid #495057;
+      background: rgba(0,0,0,0.1);
+      }
+
+      .sidebar-header .brand {
+      display: flex;
+      align-items: center;
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      }
+
+      .sidebar-header .brand i {
+      margin-right: 10px;
+      color: #ffc107;
+      }
+
+      .sidebar-nav {
+      padding: 20px 0;
+      }
+
+      .nav-section {
+      margin-bottom: 30px;
+      }
+
+      .nav-section-title {
+      padding: 0 20px 10px 20px;
+      font-size: 0.75rem;
+      color: #adb5bd;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      border-bottom: 1px solid #495057;
+      margin-bottom: 15px;
+      }
+
+      .nav-item {
+      margin-bottom: 5px;
+      }
+
+      .nav-link {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: #adb5bd;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-radius: 0;
+      position: relative;
+      }
+
+      .nav-link:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      transform: translateX(5px);
+      }
+
+      .nav-link.active {
+      background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+      color: #343a40;
+      font-weight: 600;
+      }
+
+      .nav-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #ffc107;
+      }
+
+      .nav-link i {
+      font-size: 1.1rem;
+      margin-right: 15px;
+      width: 20px;
+      text-align: center;
+      }
+
+      /* Scrollbar */
+      .sidebar::-webkit-scrollbar {
+      width: 6px;
+      }
+
+      .sidebar::-webkit-scrollbar-track {
+      background: #2c3136;
+      }
+
+      .sidebar::-webkit-scrollbar-thumb {
+      background: #495057;
+      border-radius: 3px;
+      }
+
+      .sidebar::-webkit-scrollbar-thumb:hover {
+      background: #6c757d;
+      }
+
+      /* Responsive Sidebar */
+      @media (max-width: 768px) {
+      .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+      top: 0;
+      }
+      }
+
+  </style>
+
+</head>
+<body>
+<aside class="sidebar" id="sidebar" th:fragment="sidebar">
+  <button class="sidebar-toggle" id="sidebarToggle">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+
+  <div class="sidebar-header">
+    <a href="/admin" class="brand">
+      <i class="fas fa-shield-alt"></i>
+      <span class="brand-text">Admin Panel</span>
+    </a>
+  </div>
+
+  <nav class="sidebar-nav">
+    <!-- Main Section -->
+    <div class="nav-section">
+      <div class="nav-section-title">Main</div>
+      <div class="nav-item">
+        <a href="/admin/dashboard" class="nav-link active">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Dashboard</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- E-commerce Section -->
+    <div class="nav-section">
+      <div class="nav-section-title">E-commerce</div>
+      <div class="nav-item">
+        <a href="/admin/products" class="nav-link">
+          <i class="fas fa-box"></i>
+          <span>Products</span>
+          <span class="badge">24</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="/admin/categories" class="nav-link">
+          <i class="fas fa-tags"></i>
+          <span>Categories</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="/admin/orders" class="nav-link">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Orders</span>
+          <span class="badge">12</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="/admin/inventory" class="nav-link">
+          <i class="fas fa-warehouse"></i>
+          <span>Inventory</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Users Section -->
+    <div class="nav-section">
+      <div class="nav-section-title">Users</div>
+      <div class="nav-item">
+        <a href="/admin/customers" class="nav-link">
+          <i class="fas fa-users"></i>
+          <span>Customers</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="/admin/admins" class="nav-link">
+          <i class="fas fa-user-shield"></i>
+          <span>Administrators</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="/admin/reviews" class="nav-link">
+          <i class="fas fa-star"></i>
+          <span>Reviews</span>
+          <span class="badge">5</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Settings Section -->
+    <div class="nav-section">
+      <div class="nav-section-title">Settings</div>
+      <div class="nav-item">
+        <a href="/admin/settings" class="nav-link">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+</aside>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.getElementById('sidebarToggle').addEventListener('click', function() {
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.getElementById('mainContent');
+      const toggleIcon = this.querySelector('i');
+
+      sidebar.classList.toggle('collapsed');
+      mainContent.classList.toggle('expanded');
+
+      // Toggle icon
+      if (sidebar.classList.contains('collapsed')) {
+          toggleIcon.classList.remove('fa-chevron-left');
+          toggleIcon.classList.add('fa-chevron-right');
+      } else {
+          toggleIcon.classList.remove('fa-chevron-right');
+          toggleIcon.classList.add('fa-chevron-left');
+      }
+  });
+
+  document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+          // Remove active class from all links
+          document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+          // Add active class to clicked link
+          this.classList.add('active');
+      });
+  });
+</script>
+
+</body>
+</html>

@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.lcwd.electronic.store</groupId>
-	<artifactId>Electronic-store</artifactId>
+	<artifactId>electronic-store</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Electronic-store</name>
 	<description>Backend for electronic store</description>
