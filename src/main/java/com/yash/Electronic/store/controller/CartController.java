@@ -2,7 +2,7 @@ package com.yash.Electronic.store.controller;
 
 import com.yash.Electronic.store.service.CartService;
 import com.yash.Electronic.store.dtos.AddItemToCartRequest;
-import com.yash.Electronic.store.dtos.ApiResposeClass;
+import com.yash.Electronic.store.dtos.ApiResponseClass;
 import com.yash.Electronic.store.dtos.CartDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,18 +23,18 @@ public class CartController {
     }
 
     @DeleteMapping("/{userId}/items/{itemId}")
-    public ResponseEntity<ApiResposeClass> removeItemToCart(@PathVariable String userId, @PathVariable int itemId){
+    public ResponseEntity<ApiResponseClass> removeItemToCart(@PathVariable String userId, @PathVariable int itemId){
         cart.removeItemFromCart(userId, itemId);
-        ApiResposeClass resposeClass = ApiResposeClass.builder().message("Item is removed !!").success(true).status(HttpStatus.OK).build();
+        ApiResponseClass resposeClass = ApiResponseClass.builder().message("Item is removed !!").success(true).status(HttpStatus.OK).build();
         return new ResponseEntity<>(resposeClass, HttpStatus.OK);
     }
 
     //clearcart
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<ApiResposeClass> clearCart(@PathVariable String userId){
+    public ResponseEntity<ApiResponseClass> clearCart(@PathVariable String userId){
         cart.clearCart(userId);
-        ApiResposeClass respose = ApiResposeClass.builder().message("Cart is clear").success(true).status(HttpStatus.OK).build();
+        ApiResponseClass respose = ApiResponseClass.builder().message("Cart is clear").success(true).status(HttpStatus.OK).build();
         return new ResponseEntity<>(respose, HttpStatus.OK);
     }
     @GetMapping("/{userId}")

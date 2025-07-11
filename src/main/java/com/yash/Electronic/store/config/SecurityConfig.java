@@ -17,7 +17,6 @@ public class SecurityConfig {
     @Autowired
     private OAuthAuthenticationSuccessHandler  handler;
 
-
     @Autowired
     private SecurityCustomUserDetailService userDetailService;
 

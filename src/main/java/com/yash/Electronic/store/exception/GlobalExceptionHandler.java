@@ -1,6 +1,6 @@
 package com.yash.Electronic.store.exception;
 
-import com.yash.Electronic.store.dtos.ApiResposeClass;
+import com.yash.Electronic.store.dtos.ApiResponseClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -19,8 +19,8 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiResposeClass> ResourceNotFoundExceptiom(ResourceNotFoundException ex){
-        ApiResposeClass response = ApiResposeClass.builder()
+    public ResponseEntity<ApiResponseClass> ResourceNotFoundExceptiom(ResourceNotFoundException ex){
+        ApiResponseClass response = ApiResponseClass.builder()
                 .message("Some went wrong")
                 .status(HttpStatus.NOT_FOUND)
                 .success(false)
@@ -39,8 +39,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(BadApiRequest.class)
-    public ResponseEntity<ApiResposeClass> ResourceNotFoundExceptiom(BadApiRequest ex){
-        ApiResposeClass response = ApiResposeClass.builder()
+    public ResponseEntity<ApiResponseClass> ResourceNotFoundExceptiom(BadApiRequest ex){
+        ApiResponseClass response = ApiResponseClass.builder()
                 .message("Some went wrong")
                 .status(HttpStatus.BAD_REQUEST)
                 .success(false)

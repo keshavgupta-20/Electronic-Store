@@ -49,16 +49,16 @@ public class UserController {
                              @RequestParam("repassword") String repassword,Model model){
 
         if (bindingResult.hasErrors()){
-            return "Register";
+            return "register";
         }
         if (!userDto.getPassword().equals(repassword)) {
             model.addAttribute("passwordMismatch", "Passwords do not match");
-            return "Register";
+            return "register";
         }
        User user =  userRepo.findByEmail(userDto.getEmail()).orElse(null);
         if (user != null){
             model.addAttribute("email", "Email already exist");
-            return "Register";
+            return "register";
         }
         userServices.create_User(userDto);
         return "redirect:/ElectroHub/";

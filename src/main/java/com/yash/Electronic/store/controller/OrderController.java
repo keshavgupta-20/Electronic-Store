@@ -29,9 +29,9 @@ public class OrderController {
 
     //remove
     @DeleteMapping("/{orderId}")
-    public ResponseEntity<ApiResposeClass> deleteOrder(@PathVariable String orderId){
+    public ResponseEntity<ApiResponseClass> deleteOrder(@PathVariable String orderId){
         orderService.removeOrder(orderId);
-        ApiResposeClass resposeClass = ApiResposeClass.builder().status(HttpStatus.OK)
+        ApiResponseClass resposeClass = ApiResponseClass.builder()
                 .success(true)
                 .message("Order is removed")
                 .build();

@@ -2,7 +2,7 @@ package com.yash.Electronic.store.controller;
 
 import com.yash.Electronic.store.service.FileService;
 import com.yash.Electronic.store.service.ProdcutService;
-import com.yash.Electronic.store.dtos.ApiResposeClass;
+import com.yash.Electronic.store.dtos.ApiResponseClass;
 import com.yash.Electronic.store.dtos.ImageResponse;
 import com.yash.Electronic.store.dtos.PageableResponse;
 import com.yash.Electronic.store.dtos.ProductDto;
@@ -46,9 +46,9 @@ public class ProductController {
 
     }
     @DeleteMapping("/{productId}")
-    public ResponseEntity<ApiResposeClass> delete(@PathVariable String productId) throws IOException {
+    public ResponseEntity<ApiResponseClass> delete(@PathVariable String productId) throws IOException {
         prodcutService.delete(productId);
-        ApiResposeClass build = ApiResposeClass.builder().message("Product id deleted").status(HttpStatus.OK).success(true).build();
+        ApiResponseClass build = ApiResponseClass.builder().message("Product id deleted").status(HttpStatus.OK).success(true).build();
         return new ResponseEntity<>(build, HttpStatus.OK);
     }
 

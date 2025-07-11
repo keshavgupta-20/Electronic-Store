@@ -43,7 +43,7 @@ public class HomeController {
             }
         }
 
-        return "LandingPage";
+        return "landing-Page";
     }
 
     @Autowired
@@ -77,11 +77,11 @@ public class HomeController {
     @RequestMapping("/register")
     public String register(Model model){
         model.addAttribute("registerUser", new UserDto());
-        return "Register";
+        return "register";
     }
     @RequestMapping("/deals")
     public String deals(){
-        return "Deals";
+        return "deals";
     }
 
     @RequestMapping("/cart")

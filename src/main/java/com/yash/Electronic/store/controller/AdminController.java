@@ -22,9 +22,29 @@ public class AdminController {
         return "admin-product";
     }
 
-    @GetMapping("/order")
+    @GetMapping("/orders")
     public String orders(){
         return "pending-orders";
+    }
+
+    @GetMapping("/inventry")
+    public  String inventry(){
+        return "inventry";
+    }
+
+    @GetMapping("/customer")
+    public String totaluser(){
+        return "show-users";
+    }
+
+    @GetMapping("/promotion")
+    public String dealsOnProduct(){
+        return "deal-edit";
+    }
+
+    @GetMapping("/adminview")
+    public String adminView(){
+        return "admin-view";
     }
 
 }

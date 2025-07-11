@@ -53,10 +53,10 @@ public class CategoryController {
 
     //delete
     @DeleteMapping("/{categoryId}")
-    public ResponseEntity<ApiResposeClass> deleteUser(@PathVariable("categoryId") String categoryId){
+    public ResponseEntity<ApiResponseClass> deleteUser(@PathVariable("categoryId") String categoryId){
         categoryService.delete(categoryId);
-        ApiResposeClass apiResposeClass = ApiResposeClass.builder().message("Deleted SuccessFul").status(HttpStatus.OK).success(true).build();
-        return new ResponseEntity<>(apiResposeClass, HttpStatus.OK);
+        ApiResponseClass apiResponseClass = ApiResponseClass.builder().message("Deleted SuccessFul").status(HttpStatus.OK).success(true).build();
+        return new ResponseEntity<>(apiResponseClass, HttpStatus.OK);
 
     }
 

@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Pending Orders</title>
+  <title>Admin Management</title>
 
   <!-- Bootstrap & Font Awesome -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -71,31 +71,31 @@
 <!-- Main Content Section -->
 <section class="content-wrapper">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Pending Orders</h2>
+    <h2>Administrators</h2>
+    <a href="/admins/add" class="btn btn-primary">
+      <i class="fas fa-user-plus"></i> Add Admin
+    </a>
   </div>
 
   <table class="table table-hover table-bordered align-middle">
     <thead>
     <tr>
-      <th>Order ID</th>
-      <th>Payment Status</th>
-      <th>Ordered Date</th>
-      <th>Delivered Date</th>
+      <th>Admin ID</th>
+      <th>Username</th>
+      <th>Name</th>
       <th>Actions</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="order : ${orders}">
-      <td th:text="${order.orderId}">ORD001</td>
-      <td>
-                    <span th:classappend="${order.paymentStatus == 'NOTPAID'} ? 'text-danger' : 'text-success'"
-                          th:text="${order.paymentStatus}">NOTPAID</span>
-      </td>
-      <td th:text="${#dates.format(order.orderedDate, 'dd-MM-yyyy HH:mm')}">01-07-2025 15:30</td>
-      <td th:text="${order.deliveredDate != null ? #dates.format(order.deliveredDate, 'dd-MM-yyyy HH:mm') : 'Not Delivered'}">Not Delivered</td>
+    <tr th:each="admin : ${admins}">
+      <td th:text="${admin.id}">A001</td>
+      <td th:text="${admin.username}">admin1</td>
+      <td th:text="${admin.name}">John Admin</td>
       <td class="action-btns">
-        <a th:href="@{'/orders/view/' + ${order.orderId}}" class="btn btn-info btn-sm">
-          <i class="fas fa-eye"></i> View Detail
+        <a th:href="@{'/admins/delete/' + ${admin.id}}"
+           onclick="return confirm('Are you sure you want to delete this admin?');"
+           class="btn btn-danger btn-sm">
+          <i class="fas fa-trash-alt"></i> Delete
         </a>
       </td>
     </tr>
