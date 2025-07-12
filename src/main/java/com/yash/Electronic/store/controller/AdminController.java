@@ -27,12 +27,7 @@ public class AdminController {
         return "dashboard";
     }
 
-    @GetMapping("/category")
-    public String categorys(Model model){
-        List<Category> categories = categoryRepo.findAll();
-        model.addAttribute("categories", categories);
-        return "category";
-    }
+
     @GetMapping("/products")
     public String products(){
         return "admin-product";

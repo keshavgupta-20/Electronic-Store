@@ -1,0 +1,34 @@
+    /* Ensure body content isn't hidden behind fixed navbar */
+body {
+padding-top: 70px; /* Adjust if your navbar height is different */
+overflow-y: auto;
+}
+
+/* Prevent any content area from hiding dropdowns */
+main, .container, .wrapper, .content {
+overflow: visible !important;
+position: relative;
+z-index: 1;
+}
+
+/* Navbar stays fixed and on top */
+.navbar {
+background-color: #343a40;
+z-index: 1050;
+position: fixed;
+top: 0;
+width: 100%;
+}
+
+/* Dropdown menu floats and appears on hover */
+.dropdown-menu {
+z-index: 2000 !important;
+position: absolute;
+display: none;
+}
+
+/* Show dropdown when hovered (desktop-friendly) */
+.nav-item.dropdown:hover .dropdown-menu {
+display: block;
+}
+

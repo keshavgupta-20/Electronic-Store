@@ -1,0 +1,36 @@
+        body {
+            background-color: #f8f9fa;
+            padding-top: 70px;
+            padding-left: 250px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .form-wrapper {
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            max-width: 700px;
+        }
+
+        h2 {
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #343a40;
+        }
+
+        .text-danger {
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-left: 0;
+            }
+
+            .form-wrapper {
+                margin: 10px;
+                padding: 20px;
+            }
+        }

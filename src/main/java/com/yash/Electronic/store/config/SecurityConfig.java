@@ -39,7 +39,7 @@ public class SecurityConfig {
                             .requestMatchers("/img/**", "/css/**", "/js/**", "/webjars/**").permitAll()
                             .requestMatchers("/ElectroHub/login", "/ElectroHub/register", "/ElectroHub/productss", "/ElectroHub/deals","/ElectroHub/user/do-register", "/ElectroHub/").permitAll()
                             .requestMatchers("/ElectroHub/wishlist").hasAnyRole("USER", "ADMIN")
-                            .requestMatchers("/ElectroHub/admin/dashboard").hasRole("ADMIN")
+                            .requestMatchers("/ElectroHub/admin/**").hasRole("ADMIN")
                             .anyRequest().authenticated();
                 })
                 .formLogin(formLogin -> {

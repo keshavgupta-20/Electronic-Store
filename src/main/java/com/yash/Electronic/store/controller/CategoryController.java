@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StreamUtils;
 import org.springframework.validation.BindingResult;
@@ -25,9 +26,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-@RestController
-@RequestMapping("/ElectroHub/admin/category/add")
+@Controller
+@RequestMapping("/ElectroHub/admin/category")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
@@ -42,35 +46,56 @@ public class CategoryController {
     private String imageUploadPath;
     private Logger logger = LoggerFactory.getLogger(CategoryController.class);
     //create
-    @PostMapping("/save")
+    @PostMapping("/add/save")
     public String createCategory(@Valid @ModelAttribute("category") CategoryDto category,
-    BindingResult result, @RequestParam("coverPage") MultipartFile coverImages, Model model) throws IOException {
+                                 BindingResult result, @RequestParam("coverPage") MultipartFile coverImages, Model model) throws IOException {
 
         // Validate image (you can replace this with your @ImageValidator logic)
         if (coverImages.isEmpty() || !coverImages.getContentType().startsWith("image/")) {
             System.out.println("Hey");
             model.addAttribute("imageError", "Please upload a valid image.");
-            return "add-category";
+            return "/ElectroHub/admin/category/";
         }
         String imageName = fileService.uploadFile(coverImages, imageUploadPath);
 
         category.setCoverPage(imageName);
         CategoryDto categoryDto =  categoryService.create(category);
-        return "redirect:/categories";
+        return "redirect:/ElectroHub/admin/category/show";
     }
     //update
-    @PutMapping("/{categoryId}")
-    public  ResponseEntity<CategoryDto> updateCate(@Valid@PathVariable("categoryId") String categoryId, @RequestBody CategoryDto categoryDto){
-        CategoryDto categoryDto1 = categoryService.update(categoryDto, categoryId);
-        return  new ResponseEntity<>(categoryDto1, HttpStatus.OK);
+    @PostMapping("/update")
+    public  String updateCate(@ModelAttribute("category") @Valid CategoryDto category,
+                              @RequestParam("coverImage") MultipartFile file,
+                              BindingResult result,
+                              Model model) throws IOException {
+        if (!file.isEmpty()){
+            String fullpath = imageUploadPath+category.getCoverPage();
+            Path path = Paths.get(fullpath);
+            try{
+                Files.delete(path);
+            }
+            catch (IOException ex){
+                logger.info("User image not found in folder");
+                ex.printStackTrace();
+            }
+            catch (Exception ex){
+                ex.printStackTrace();
+            }
+
+            String filename = fileService.uploadFile(file, imageUploadPath);
+            category.setCoverPage(filename);
+        }
+
+        CategoryDto categoryDto1 = categoryService.update(category, category.getCategoryId());
+        return "redirect:/ElectroHub/admin/category/show";
     }
 
     //delete
-    @DeleteMapping("/{categoryId}")
-    public ResponseEntity<ApiResponseClass> deleteUser(@PathVariable("categoryId") String categoryId){
+    @GetMapping("/delete/{categoryId}")
+    public String deleteUser(@PathVariable("categoryId") String categoryId){
         categoryService.delete(categoryId);
         ApiResponseClass apiResponseClass = ApiResponseClass.builder().message("Deleted SuccessFul").status(HttpStatus.OK).success(true).build();
-        return new ResponseEntity<>(apiResponseClass, HttpStatus.OK);
+        return "redirect:/ElectroHub/admin/category/show";
 
     }
 
@@ -81,16 +106,25 @@ public class CategoryController {
         return new ResponseEntity<>(categoryDto, HttpStatus.OK);
     }
 
+
     //getall
-    @GetMapping
-    public ResponseEntity<PageableResponse<CategoryDto>> getall(
+    @GetMapping("/show")
+    public String getall(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "4", required = false)int pageSize,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false)int pageSize,
             @RequestParam(value = "sortBy", defaultValue = "title", required = false)String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = "Asc", required = false)String sortDir
+            @RequestParam(value = "sortDir", defaultValue = "Asc", required = false)String sortDir, Model model
     ){
        PageableResponse<CategoryDto> pageableResponse =  categoryService.getall(pageNumber, pageSize, sortBy, sortDir);
-       return new ResponseEntity<>(pageableResponse, HttpStatus.OK);
+       model.addAttribute(pageableResponse);
+        model.addAttribute("categories", pageableResponse.getContent());
+        model.addAttribute("pageNumber", pageableResponse.getPageNumber());
+        model.addAttribute("totalPages", pageableResponse.getTotalPages());
+        model.addAttribute("pageSize", pageableResponse.getPageSize());
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("isLastPage", pageableResponse.isLastPage());
+       return "category";
 
     }
     @PostMapping("/image/{categoryId}")
@@ -141,5 +175,11 @@ public class CategoryController {
         PageableResponse<ProductDto> productdtos1 = prodcutService.getAllOfCategory(categoryId,pageNumber, pageSize, sortBy, sortDir);
         return  new ResponseEntity<>(productdtos1, HttpStatus.OK);
 
+    }
+    @GetMapping("/edit/{categoryId}")
+    public String showEditForm(@PathVariable String categoryId, Model model){
+        CategoryDto categoryDto = categoryService.getSingle(categoryId);
+        model.addAttribute("category",categoryDto);
+        return "edit-category";
     }
 }
