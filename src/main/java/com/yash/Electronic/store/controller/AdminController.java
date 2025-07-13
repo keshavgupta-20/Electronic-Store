@@ -1,9 +1,11 @@
 package com.yash.Electronic.store.controller;
 
 import com.yash.Electronic.store.dtos.CategoryDto;
+import com.yash.Electronic.store.dtos.ProductDto;
 import com.yash.Electronic.store.entites.Category;
 import com.yash.Electronic.store.repository.CategoryRepo;
 import com.yash.Electronic.store.service.CategoryService;
+import com.yash.Electronic.store.service.ProdcutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
@@ -11,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -22,6 +25,9 @@ public class AdminController {
     @Autowired
     private CategoryRepo categoryRepo;
 
+    @Autowired
+    private ProdcutService prodcutService;
+
     @GetMapping("/dashboard")
     public String dashboard(){
         return "dashboard";
@@ -29,7 +35,10 @@ public class AdminController {
 
 
     @GetMapping("/products")
-    public String products(){
+    public String products(Model model){
+       List<ProductDto> product = new ArrayList<>();
+
+
         return "admin-product";
     }
 

@@ -1,13 +1,14 @@
 package com.yash.Electronic.store.controller;
 
+import com.yash.Electronic.store.dtos.*;
+import com.yash.Electronic.store.entites.Category;
+import com.yash.Electronic.store.repository.CategoryRepo;
+import com.yash.Electronic.store.service.CategoryService;
 import com.yash.Electronic.store.service.FileService;
 import com.yash.Electronic.store.service.ProdcutService;
-import com.yash.Electronic.store.dtos.ApiResponseClass;
-import com.yash.Electronic.store.dtos.ImageResponse;
-import com.yash.Electronic.store.dtos.PageableResponse;
-import com.yash.Electronic.store.dtos.ProductDto;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +16,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StreamUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
-@RestController
-@RequestMapping("/products")
+@Controller
+@RequestMapping("/ElectroHub/admin/product")
 public class ProductController {
     @Autowired
     private ProdcutService prodcutService;
@@ -33,23 +42,60 @@ public class ProductController {
     private FileService fileService;
     @Value("${product.profile.image.path}")
     private String imageUploadPath;
-    //create
-    @PostMapping
-    public ResponseEntity<ProductDto> createProdcut(@Valid @RequestBody ProductDto productDto){
-        ProductDto created = prodcutService.create(productDto);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
-    }
-    @PutMapping("/{productId}")
-    public ResponseEntity<ProductDto> updateProduct(@Valid @PathVariable String productId, @RequestBody ProductDto productDto){
-        ProductDto updated = prodcutService.update(productDto, productId);
-        return new ResponseEntity<>(updated, HttpStatus.OK);
 
+    @Autowired
+    private CategoryRepo categoryRepo;
+
+    @Autowired
+    private ModelMapper modelMapper;
+    //create
+    @PostMapping("/save")
+    public String createProdcut(@Valid @ModelAttribute("product") ProductDto product, BindingResult result,
+                                @RequestParam("productImage") MultipartFile coverImage, Model model) throws IOException {
+
+        if (result.hasErrors() && product.getProductImage() != null){
+            return "add-product";
+        }
+        if (coverImage.isEmpty() || !coverImage.getContentType().startsWith("image/")) {
+            logger.info("Image is not update");
+            model.addAttribute("imageError", "Please upload a valid image.");
+            return "/ElectroHub/admin/category/";
+        }
+
+        String imageName = fileService.uploadFile(coverImage, imageUploadPath);
+        product.setProductImage(imageName);
+        ProductDto created = prodcutService.create(product);
+        return "redirect:/ElectroHub/admin/product/show" ;
     }
-    @DeleteMapping("/{productId}")
-    public ResponseEntity<ApiResponseClass> delete(@PathVariable String productId) throws IOException {
+    @GetMapping("/update")
+    public String updateProduct(@ModelAttribute("product") @Valid ProductDto product,
+                                @RequestParam("productImage") MultipartFile file,
+                                BindingResult result,
+                                Model model) throws IOException {
+        if (!file.isEmpty()){
+            String fullpath = imageUploadPath+product.getProductImage();
+            Path path = Paths.get(fullpath);
+            try{
+                Files.delete(path);
+            }
+            catch (IOException ex){
+                logger.info("User image not found in folder");
+                ex.printStackTrace();
+            }
+            catch (Exception ex){
+                ex.printStackTrace();
+            }
+
+            String filename = fileService.uploadFile(file, imageUploadPath);
+            product.setProductImage(filename);
+        }
+        ProductDto productDto = prodcutService.update(product, product.getProductId());
+        return "redirect:/ElectroHub/admin/product/show" ;
+    }
+    @GetMapping("/delete/{productId}")
+    public String delete(@PathVariable String productId) throws IOException {
         prodcutService.delete(productId);
-        ApiResponseClass build = ApiResponseClass.builder().message("Product id deleted").status(HttpStatus.OK).success(true).build();
-        return new ResponseEntity<>(build, HttpStatus.OK);
+        return "redirect:/ElectroHub/admin/product/show" ;
     }
 
     @GetMapping("/{productId}")
@@ -57,13 +103,21 @@ public class ProductController {
         ProductDto productDto = prodcutService.getsingle(productId);
         return new ResponseEntity<>(productDto, HttpStatus.OK);
     }
-    @GetMapping
-    public  ResponseEntity<PageableResponse<ProductDto>> getall(@RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+    @GetMapping("/show")
+    public  String getall(@RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
                                                                 @RequestParam(value = "pageSize", defaultValue = "4", required = false)int pageSize,
                                                                 @RequestParam(value = "sortBy", defaultValue = "title", required = false)String sortBy,
-                                                                @RequestParam(value = "sortDir", defaultValue = "Asc", required = false)String sortDir){
+                                                                @RequestParam(value = "sortDir", defaultValue = "Asc", required = false)String sortDir, Model model){
     PageableResponse<ProductDto> pageableResponse = prodcutService.getAll(pageNumber, pageSize, sortBy, sortDir);
-    return new ResponseEntity<>(pageableResponse, HttpStatus.OK);
+    model.addAttribute("product",pageableResponse.getContent());
+    model.addAttribute("pageNumber");
+        model.addAttribute("pageNumber", pageableResponse.getPageNumber());
+        model.addAttribute("totalPages", pageableResponse.getTotalPages());
+        model.addAttribute("pageSize", pageableResponse.getPageSize());
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("isLastPage", pageableResponse.isLastPage());
+        return "admin-product";
     }
 
     @GetMapping("/live")
@@ -102,5 +156,30 @@ public class ProductController {
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         StreamUtils.copy(inputStream, response.getOutputStream());
     }
+    @GetMapping("/add-product")
+    public  String showUserForm(Model model){
+        ProductDto product = new ProductDto();
+        List<Category> categoryList = categoryRepo.findAll();
+        List<CategoryDto> categoryDtos = categoryList.stream()
+                .map(cat -> modelMapper.map(cat, CategoryDto.class))
+                .collect(Collectors.toList());
+
+        model.addAttribute("product", product);
+        model.addAttribute("categories", categoryDtos); // name matches the form
+
+        return "add-product";
+    }
+
+    @GetMapping("/edit/{productId}")
+    public String editPage(@PathVariable("productId")String productId, Model model){
+        ProductDto productDto = prodcutService.getsingle(productId);
+        List<Category> categoryList = categoryRepo.findAll();
+//        fileService.getResource(imageUploadPath, );
+        List<CategoryDto> categoryDto = categoryList.stream().map(cat-> modelMapper.map(cat, CategoryDto.class)).collect(Collectors.toList());
+        model.addAttribute("category", categoryDto);
+        model.addAttribute("product", productDto);
+        return "product-edit";
+    }
+
 
 }

@@ -21,8 +21,11 @@ public class Product {
     private int price;
     private int quantity;
     private Date addedDate;
-    private boolean live;
-    private boolean stock;
+    @Column(name = "live", nullable = false)
+    private Boolean live = false;
+
+    @Column(name = "stock", nullable = false)
+    private boolean stock =false;
     private  int discountedPrice;
     private String productImage;
     @ManyToOne(fetch = FetchType.EAGER)

@@ -52,7 +52,7 @@ public class CategoryController {
 
         // Validate image (you can replace this with your @ImageValidator logic)
         if (coverImages.isEmpty() || !coverImages.getContentType().startsWith("image/")) {
-            System.out.println("Hey");
+            logger.info("Image is not update");
             model.addAttribute("imageError", "Please upload a valid image.");
             return "/ElectroHub/admin/category/";
         }
@@ -64,10 +64,11 @@ public class CategoryController {
     }
     //update
     @PostMapping("/update")
-    public  String updateCate(@ModelAttribute("category") @Valid CategoryDto category,
+    public  String updateCategory(@ModelAttribute("category") @Valid CategoryDto category,
                               @RequestParam("coverImage") MultipartFile file,
                               BindingResult result,
                               Model model) throws IOException {
+
         if (!file.isEmpty()){
             String fullpath = imageUploadPath+category.getCoverPage();
             Path path = Paths.get(fullpath);
@@ -136,8 +137,8 @@ public class CategoryController {
         ImageResponse imageResponse = ImageResponse.builder().message("Image is inserted successfully").imageName(imageName).success(true).httpStatus(HttpStatus.CREATED).build();
         return new ResponseEntity<>(imageResponse, HttpStatus.CREATED);
     }
-    @GetMapping("/image/{categoryId}")
-    public  void servedUserImage(@PathVariable String categoryId, HttpServletResponse response)throws IOException{
+
+    public  void servedUserImage( String categoryId, HttpServletResponse response)throws IOException{
         CategoryDto categoryDto = categoryService.getSingle(categoryId);
         logger.info(categoryDto.getCoverPage());
         InputStream inputStream = fileService.getResource(imageUploadPath, categoryDto.getCoverPage());
