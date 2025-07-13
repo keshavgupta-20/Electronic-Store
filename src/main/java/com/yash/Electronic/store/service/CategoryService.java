@@ -4,6 +4,8 @@ import com.yash.Electronic.store.dtos.CategoryDto;
 import com.yash.Electronic.store.dtos.PageableResponse;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public interface CategoryService {
 
@@ -12,5 +14,6 @@ public interface CategoryService {
     void delete(String categoyId);
     PageableResponse<CategoryDto> getall(int pageNumber, int pageSize, String sortBy, String sortDir);
     CategoryDto getSingle(String categoryId);
+    List<CategoryDto> getAllCategory();
 
 }

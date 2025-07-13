@@ -67,31 +67,38 @@ public class ProductController {
         ProductDto created = prodcutService.create(product);
         return "redirect:/ElectroHub/admin/product/show" ;
     }
-    @GetMapping("/update")
+    @PostMapping("/update")
     public String updateProduct(@ModelAttribute("product") @Valid ProductDto product,
-                                @RequestParam("productImage") MultipartFile file,
+                                @RequestParam("newImage") MultipartFile file,
                                 BindingResult result,
                                 Model model) throws IOException {
-        if (!file.isEmpty()){
-            String fullpath = imageUploadPath+product.getProductImage();
-            Path path = Paths.get(fullpath);
-            try{
-                Files.delete(path);
-            }
-            catch (IOException ex){
-                logger.info("User image not found in folder");
-                ex.printStackTrace();
-            }
-            catch (Exception ex){
-                ex.printStackTrace();
+        logger.info(product.getProductImage());
+
+        if (result.hasErrors()) {
+            model.addAttribute("product", product);
+            return "edit-product"; // return back to form if errors
+        }
+
+        if (!file.isEmpty()) {
+            if (product.getProductImage() != null && !product.getProductImage().isBlank()) {
+                String fullpath = imageUploadPath + product.getProductImage();
+                Path path = Paths.get(fullpath);
+                try {
+                    Files.deleteIfExists(path);
+                } catch (IOException ex) {
+                    logger.info("User image not found in folder");
+                    ex.printStackTrace();
+                }
             }
 
             String filename = fileService.uploadFile(file, imageUploadPath);
             product.setProductImage(filename);
         }
+
         ProductDto productDto = prodcutService.update(product, product.getProductId());
-        return "redirect:/ElectroHub/admin/product/show" ;
+        return "redirect:/ElectroHub/admin/product/show";
     }
+
     @GetMapping("/delete/{productId}")
     public String delete(@PathVariable String productId) throws IOException {
         prodcutService.delete(productId);
@@ -120,14 +127,14 @@ public class ProductController {
         return "admin-product";
     }
 
-    @GetMapping("/live")
-    public  ResponseEntity<PageableResponse<ProductDto>> getAllLive(@RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
-                                                                    @RequestParam(value = "pageSize", defaultValue = "4", required = false)int pageSize,
-                                                                    @RequestParam(value = "sortBy", defaultValue = "title", required = false)String sortBy,
-                                                                    @RequestParam(value = "sortDir", defaultValue = "Asc", required = false)String sortDir) {
-        PageableResponse<ProductDto> pageableResponse = prodcutService.findByLiveTrue(pageNumber, pageSize, sortBy, sortDir);
-        return new ResponseEntity<>(pageableResponse, HttpStatus.OK);
-    }
+//    @GetMapping("/live")
+//    public  ResponseEntity<PageableResponse<ProductDto>> getAllLive(@RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+//                                                                    @RequestParam(value = "pageSize", defaultValue = "4", required = false)int pageSize,
+//                                                                    @RequestParam(value = "sortBy", defaultValue = "title", required = false)String sortBy,
+//                                                                    @RequestParam(value = "sortDir", defaultValue = "Asc", required = false)String sortDir) {
+//        PageableResponse<ProductDto> pageableResponse = prodcutService.findByLiveTrue(pageNumber, pageSize, sortBy, sortDir);
+//        return new ResponseEntity<>(pageableResponse, HttpStatus.OK);
+//    }
     @GetMapping("/search/{query}")
     public  ResponseEntity<PageableResponse<ProductDto>> SearchUSer(
             @PathVariable String query,
@@ -138,24 +145,7 @@ public class ProductController {
         PageableResponse<ProductDto> pageableResponse = prodcutService.searchByTitle(query, pageNumber, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(pageableResponse, HttpStatus.OK);
     }
-    @PostMapping("/image/{productId}")
-    public ResponseEntity<ImageResponse> uploadProductImage(@RequestParam("productImage")MultipartFile file, @PathVariable String productId) throws IOException {
-        String imageName = fileService.uploadFile(file,imageUploadPath);
-        ProductDto productDto = prodcutService.getsingle(productId);
-        productDto.setProductImage(imageName);
-        ProductDto productDto1 = prodcutService.update(productDto,productId);
-        ImageResponse imageResponse = ImageResponse.builder().imageName(imageName).success(true).httpStatus(HttpStatus.CREATED).build();
-        return new ResponseEntity<>(imageResponse, HttpStatus.OK);
-    }
 
-    @GetMapping("/image/{productId}")
-    public void servedProductImage(@PathVariable String productId, HttpServletResponse response) throws IOException {
-        ProductDto productDto = prodcutService.getsingle(productId);
-        logger.info(productDto.getProductImage());
-        InputStream inputStream = fileService.getResource(imageUploadPath, productDto.getProductImage());
-        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-        StreamUtils.copy(inputStream, response.getOutputStream());
-    }
     @GetMapping("/add-product")
     public  String showUserForm(Model model){
         ProductDto product = new ProductDto();

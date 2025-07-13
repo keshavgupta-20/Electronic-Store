@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public interface CartService {
 
 
-    CartDto addItemToCart(String userId, AddItemToCartRequest request);
+    CartDto addItemToCart(String userId, String productId);
 
     //remove item from cart
     void removeItemFromCart(String userId, int cartItem);

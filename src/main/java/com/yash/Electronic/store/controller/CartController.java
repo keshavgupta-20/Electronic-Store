@@ -16,11 +16,11 @@ public class CartController {
     private CartService cart;
 
 
-    @PostMapping("/{userId}")
-    public ResponseEntity<CartDto> addItemTocart(@PathVariable String userId, @RequestBody AddItemToCartRequest addItemTOCartRequest){
-        CartDto cartDto = cart.addItemToCart(userId,addItemTOCartRequest);
-        return new ResponseEntity<>(cartDto, HttpStatus.OK);
-    }
+//    @PostMapping("/{userId}")
+//    public ResponseEntity<CartDto> addItemTocart(@PathVariable String userId, @RequestBody AddItemToCartRequest addItemTOCartRequest){
+//        CartDto cartDto = cart.addItemToCart(userId,addItemTOCartRequest);
+//        return new ResponseEntity<>(cartDto, HttpStatus.OK);
+//    }
 
     @DeleteMapping("/{userId}/items/{itemId}")
     public ResponseEntity<ApiResponseClass> removeItemToCart(@PathVariable String userId, @PathVariable int itemId){

@@ -23,7 +23,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProdcutService {
@@ -88,14 +91,16 @@ public class ProductServiceImpl implements ProdcutService {
     }
 
     @Override
-    public PageableResponse<ProductDto> findByLiveTrue(int pageNumber, int pageSize, String sortBy, String sortDir) {
-        Sort sort = (sortDir.equalsIgnoreCase("desc")) ? (Sort.by(sortBy).descending()) :(Sort.by(sortBy).ascending());
+    public List<ProductDto> findByLiveTrue() {
+        Pageable pageable = PageRequest.of(0, 30);
+        List<Product> products = productRepo.findByLiveTrue(pageable).getContent();
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-        Page<Product> page = productRepo.
-                findByLiveTrue(pageable);
-        return Helper.getPageableResponse(page, ProductDto.class);
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDto.class))
+                .collect(Collectors.toList());
     }
+
+
 
     @Override
     public PageableResponse<ProductDto> searchByTitle(String subTitle, int pageNumber, int pageSize, String sortBy, String sortDir) {

@@ -22,7 +22,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 @Service
 public class CategoryServiceimpl implements CategoryService {
 
@@ -85,6 +88,12 @@ public class CategoryServiceimpl implements CategoryService {
     public CategoryDto getSingle(String categoryId) {
         Category category = categoryRepo.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Id does not found"));
         return modelMapper.map(category, CategoryDto.class);
+    }
+    public List<CategoryDto> getAllCategory(){
+        List<Category> category = categoryRepo.findAll();
+        List<CategoryDto> categoryDto = category.stream().map(cat -> modelMapper.map(cat, CategoryDto.class)).collect(Collectors.toList());
+        return categoryDto;
+
     }
 
 

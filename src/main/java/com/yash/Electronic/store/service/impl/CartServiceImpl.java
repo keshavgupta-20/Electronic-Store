@@ -42,15 +42,15 @@ public class CartServiceImpl implements CartService {
 
 
     @Override
-    public CartDto addItemToCart(String userId, AddItemToCartRequest request) {
+    public CartDto addItemToCart(String userId, String productId) {
         String cartId = UUID.randomUUID().toString();
 
-        int quantity = request.getQuantity();
-        String productId = request.getProductId();
+//        int quantity = request.getQuantity();
 
-        if (quantity <= 0) {
-            throw new BadApiRequest("Requested quantity is not valid");
-        }
+
+//        if (quantity <= 0) {
+//            throw new BadApiRequest("Requested quantity is not valid");
+//        }
 
         Product product = productRepo.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Given product ID not found"));
@@ -66,33 +66,33 @@ public class CartServiceImpl implements CartService {
             newCart.setItems(new ArrayList<>());
             return newCart;
         });
-
-        AtomicReference<Boolean> updated = new AtomicReference<>(false);
-
-        List<CartItem> itemList = cart.getItems();
-
-       itemList = itemList.stream().map(item -> {
-            if (item.getProduct().getProductId().equals(productId)) {
-                item.setQuantity(quantity);
-                item.setTotalPrice(quantity * product.getPrice());
-                updated.set(true);
-            }
-            return item;
-        }).collect(Collectors.toList());
-
-//        cart.setItems(updatedItem);
-
-
-        if (!updated.get()) {
-            CartItem cartItem = CartItem.builder()
-                    .quantity(quantity)
-                    .totalPrice(quantity * product.getPrice())
-                    .cart(cart)
-                    .product(product)
-                    .build();
-            cart.getItems().add(cartItem);
-        }
-
+//
+//        AtomicReference<Boolean> updated = new AtomicReference<>(false);
+//
+//        List<CartItem> itemList = cart.getItems();
+//
+//       itemList = itemList.stream().map(item -> {
+//            if (item.getProduct().getProductId().equals(productId)) {
+//                item.setQuantity(quantity);
+//                item.setTotalPrice(quantity * product.getPrice());
+//                updated.set(true);
+//            }
+//            return item;
+//        }).collect(Collectors.toList());
+//
+////        cart.setItems(updatedItem);
+//
+//
+//        if (!updated.get()) {
+//            CartItem cartItem = CartItem.builder()
+//                    .quantity(quantity)
+//                    .totalPrice(quantity * product.getPrice())
+//                    .cart(cart)
+//                    .product(product)
+//                    .build();
+//            cart.getItems().add(cartItem);
+//        }
+//
         Cart updatedCart = cartRepo.save(cart);
         return modelMapper.map(updatedCart, CartDto.class);
 

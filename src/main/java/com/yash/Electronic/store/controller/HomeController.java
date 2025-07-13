@@ -1,16 +1,20 @@
 package com.yash.Electronic.store.controller;
 
+import com.yash.Electronic.store.dtos.*;
 import com.yash.Electronic.store.helpers.LoginHelper;
-import com.yash.Electronic.store.service.UserServices;
-import com.yash.Electronic.store.dtos.UserDto;
+import com.yash.Electronic.store.service.*;
 import com.yash.Electronic.store.repository.UserRepo;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/ElectroHub")
@@ -18,16 +22,37 @@ public class HomeController {
 
     @Autowired
     private UserServices userServices;
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private ProdcutService prodcutService;
+
+    @Autowired
+    private FileService fileService;
+
+    @Value("${category.profile.image.path}")
+    private String imageUploadPath;
+
+    @Autowired
+    private CartService cartService;
 
 
 
     @RequestMapping("/")
-    public String LandingPage(Authentication authentication, HttpSession session){
-//        System.out.println(principal.getName());
+    public String LandingPage(Authentication authentication, HttpSession session, Model model){
+        List<CategoryDto> list = categoryService.getAllCategory();
+        for (int i =0;i<list.size();i++){
+            System.out.println(list.get(i));;
+        }
+        List<ProductDto> productDtos = prodcutService.findByLiveTrue();
+        model.addAttribute("categories", list);
+        model.addAttribute("products", productDtos);
         if (authentication != null) {
             String email = LoginHelper.getEmailOfLoggedInUser(authentication);
             if (email != null && !email.isEmpty()) {
                 UserDto user = userServices.getUserbyEmail(email);
+
 
                 boolean isAdmin = authentication.
                         getAuthorities().
@@ -51,8 +76,20 @@ public class HomeController {
 
 
 
-    @RequestMapping("/productss")
-    public String products(){
+    @GetMapping("/products")
+    public  String getalls(@RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+                          @RequestParam(value = "pageSize", defaultValue = "10", required = false)int pageSize,
+                          @RequestParam(value = "sortBy", defaultValue = "title", required = false)String sortBy,
+                          @RequestParam(value = "sortDir", defaultValue = "Asc", required = false)String sortDir, Model model){
+        PageableResponse<ProductDto> pageableResponse = prodcutService.getAll(pageNumber, pageSize, sortBy, sortDir);
+        model.addAttribute("products",pageableResponse.getContent());
+        model.addAttribute("pageNumber");
+        model.addAttribute("pageNumber", pageableResponse.getPageNumber());
+        model.addAttribute("totalPages", pageableResponse.getTotalPages());
+        model.addAttribute("pageSize", pageableResponse.getPageSize());
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("isLastPage", pageableResponse.isLastPage());
         return "product";
     }
 
@@ -93,5 +130,12 @@ public class HomeController {
     public String whislist(){
         return "wishlist";
     }
+//    @PostMapping("cart/product/{productId}/user/{userId}")
+//    public String addItemTocart(@PathVariable String userId, @PathVariable String productId){
+//        CartDto cartDto = cartService.addItemToCart(userId, productId);
+//        return ;
+//    }
+
+
 
 }

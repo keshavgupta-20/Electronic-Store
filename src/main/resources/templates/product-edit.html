@@ -18,7 +18,7 @@
 <!-- Main Section -->
 <section class="content-wrapper">
   <h2>Edit Product</h2>
-  <form th:action="@{ElectroHub/admin/product/update}" th:object="${product}" method="post" enctype="multipart/form-data">
+  <form th:action="@{/ElectroHub/admin/product/update}" th:object="${product}" method="post" enctype="multipart/form-data">
 
     <!-- Product ID (readonly) -->
     <div class="mb-3">
@@ -63,7 +63,7 @@
     <!-- Upload New Image -->
     <div class="mb-3">
       <label>Upload New Product Image</label>
-      <input type="file" class="form-control" name="productImage" />
+      <input type="file" class="form-control" name="newImage" />
     </div>
 
     <button type="submit" class="btn btn-success">Update Product</button>
