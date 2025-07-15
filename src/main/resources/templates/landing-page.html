@@ -181,18 +181,22 @@
         </div>
         <div class="five-per-row">
             <div class="category-card-wrapper" th:each="cat : ${categories}">
-                <div class="card text-center category-card shadow-sm">
-                    <div class="card-body">
-                        <div class="category-icon mb-3">
-                            <img th:src="@{'/img/category/' + ${cat.coverPage}}" alt="Category Image" class="img-fluid" />
+                <a th:href="@{'/ElectroHub/' + ${cat.categoryId} + '/products' }" class="text-decoration-none text-dark">
+
+                    <div class="card text-center category-card shadow-sm">
+                        <div class="card-body">
+                            <div class="category-icon mb-3">
+                                <img th:src="@{'/img/category/' + ${cat.coverPage}}" alt="Category Image" class="img-fluid" />
+                            </div>
+                            <h6 class="card-title" th:text="${cat.title}">Category Name</h6>
+                            <small class="text-muted" th:text="${cat.description}">Category Description</small>
                         </div>
-                        <h6 class="card-title" th:text="${cat.title}">Category Name</h6>
-                        <small class="text-muted" th:text="${cat.description}">Category Description</small>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </div>
+
     <!-- Products Section -->
     <input type="hidden" id="current-user-id" th:value="${session.user != null ? session.user.userId : ''}" />
     <input type="hidden" id="is-logged-in" th:value="${session.user != null}" />

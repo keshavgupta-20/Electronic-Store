@@ -142,5 +142,12 @@ public class ProductServiceImpl implements ProdcutService {
         return Helper.getPageableResponse(product, ProductDto.class);
     }
 
+    public PageableResponse<ProductDto> getProductDiscounted(int pageNumber, int pageSize, String sortBy, String sortDir){
+        Sort sort = (sortDir.equalsIgnoreCase("desc")) ? (Sort.by(sortBy).descending()) :(Sort.by(sortBy).ascending());
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+        Page<Product> product = productRepo.findProductsWithDiscountMoreThan20Percent(pageable);
+        return Helper.getPageableResponse(product, ProductDto.class);
+    }
+
 
 }

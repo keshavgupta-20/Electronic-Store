@@ -165,18 +165,8 @@ public class CategoryController {
 
     }
 
-    //getproductOfCategory
-    @GetMapping("/{categoryId}/products")
-    public  ResponseEntity<PageableResponse<ProductDto>> updateCategoryofProduct(@PathVariable("categoryId") String categoryId,
-                                                                                 @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
-                                                                                 @RequestParam(value = "pageSize", defaultValue = "4", required = false)int pageSize,
-                                                                                 @RequestParam(value = "sortBy", defaultValue = "title", required = false)String sortBy,
-                                                                                 @RequestParam(value = "sortDir", defaultValue = "Asc", required = false)String sortDir)
-    {
-        PageableResponse<ProductDto> productdtos1 = prodcutService.getAllOfCategory(categoryId,pageNumber, pageSize, sortBy, sortDir);
-        return  new ResponseEntity<>(productdtos1, HttpStatus.OK);
 
-    }
+
     @GetMapping("/edit/{categoryId}")
     public String showEditForm(@PathVariable String categoryId, Model model){
         CategoryDto categoryDto = categoryService.getSingle(categoryId);

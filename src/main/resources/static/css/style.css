@@ -1,0 +1,53 @@
+.product-card {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+            height: 100%;
+            font-size: 0.9rem;
+        }
+
+        .product-image {
+            height: 150px;
+            object-fit: contain;
+            width: 100%;
+        }
+
+        .product-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .product-desc {
+            font-size: 0.85rem;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 0.8rem;
+        }
+
+        .discounted-price {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .discount-badge {
+            background-color: #dc3545;
+            color: white;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: 5px;
+        }
+
+        .in-stock, .out-of-stock {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .btn-sm-custom {
+            padding: 2px 8px;
+            font-size: 0.75rem;
+        }

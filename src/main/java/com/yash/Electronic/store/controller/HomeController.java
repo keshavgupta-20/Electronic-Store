@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpSession;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.Banner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -131,11 +132,54 @@ public class HomeController {
         return "register";
     }
     @RequestMapping("/deals")
-    public String deals(){
-        return "deals";
+    public String deals(@RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+                        @RequestParam(value = "pageSize", defaultValue = "10", required = false)int pageSize,
+                        @RequestParam(value = "sortBy", defaultValue = "title", required = false)String sortBy,
+                        @RequestParam(value = "sortDir", defaultValue = "Asc", required = false)String sortDir, Model model){
+
+        PageableResponse<ProductDto> pageableResponse = prodcutService.getProductDiscounted(pageNumber, pageSize, sortBy, sortDir);
+
+        model.addAttribute("products",pageableResponse.getContent());
+        model.addAttribute("pageNumber");
+        model.addAttribute("pageNumber", pageableResponse.getPageNumber());
+        model.addAttribute("totalPages", pageableResponse.getTotalPages());
+        model.addAttribute("pageSize", pageableResponse.getPageSize());
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("isLastPage", pageableResponse.isLastPage());
+        return "product";
     }
 
 
+
+    @GetMapping("/{categoryId}/products")
+    public  String updateCategoryofProduct(@PathVariable("categoryId") String categoryId,
+                                           @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+                                           @RequestParam(value = "pageSize", defaultValue = "4", required = false)int pageSize,
+                                           @RequestParam(value = "sortBy", defaultValue = "title", required = false)String sortBy,
+                                           @RequestParam(value = "sortDir", defaultValue = "Asc", required = false)String sortDir, Model model)
+    {
+        PageableResponse<ProductDto>  pageableResponse = prodcutService.getAllOfCategory(categoryId,pageNumber, pageSize, sortBy, sortDir);
+        model.addAttribute("products",pageableResponse.getContent());
+        model.addAttribute("pageNumber");
+        model.addAttribute("pageNumber", pageableResponse.getPageNumber());
+        model.addAttribute("totalPages", pageableResponse.getTotalPages());
+        model.addAttribute("pageSize", pageableResponse.getPageSize());
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("isLastPage", pageableResponse.isLastPage());
+        return "product";
+
+    }
+
+    @GetMapping("/categories")
+    public String allCategory(Model model){
+        List<CategoryDto> list = categoryService.getAllCategory();
+        model.addAttribute("categories", list);
+
+
+        return "user-category";
+    }
 
     @RequestMapping("/wishlist")
     public String whislist(){

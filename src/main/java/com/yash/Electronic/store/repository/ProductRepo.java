@@ -19,6 +19,13 @@ public interface ProductRepo  extends JpaRepository<Product, String> {
     @Query("SELECT p FROM Product p WHERE p.live = true AND p.quantity > 0")
     Page<Product> findByLiveTrue(Pageable pageable);
      Page<Product> findByCategory(Category category, Pageable pageable);
+
+
+
+    @Query("SELECT p FROM Product p WHERE ((p.price - p.discountedPrice) * 100.0 / p.price) > 20")
+    Page<Product> findProductsWithDiscountMoreThan20Percent(Pageable pageable);
+
+
     //other method
     //custom finder method
 }
