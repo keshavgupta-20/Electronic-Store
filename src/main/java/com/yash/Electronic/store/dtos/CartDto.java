@@ -15,5 +15,5 @@ public class CartDto {
     private String cartId;
     private Date createdAt;
 
-    private List<CartItem> items = new ArrayList<>();
+    private List<CartItemDto> items = new ArrayList<>();
 }

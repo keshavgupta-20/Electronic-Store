@@ -2,148 +2,155 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Title</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         /* Carousel styling for screen fit */
-        .carousel-container {
-            height: 65vh; /* Increased height for larger carousel */
-            max-height: 500px; /* Increased maximum height */
-            min-height: 350px; /* Increased minimum height */
-            overflow: hidden;
-            margin-top: 70px;
-            width: 80%; /* Reduced width to 80% of container */
-            margin-left: auto;
-            margin-right: auto;
-            border-radius: 15px; /* Added rounded corners for better appearance */
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15); /* Added shadow for depth */
-        }
+       .carousel-container {
+           height: 65vh; /* Increased height for larger carousel */
+           max-height: 500px; /* Increased maximum height */
+           min-height: 350px; /* Increased minimum height */
+           overflow: hidden;
+           margin-top: 70px;
+           width: 80%; /* Reduced width to 80% of container */
+           margin-left: auto;
+           margin-right: auto;
+           border-radius: 15px; /* Added rounded corners for better appearance */
+           box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15); /* Added shadow for depth */
+       }
 
-        .carousel-item img {
-            width: 100%;
-            height: 65vh; /* Increased height to match container */
-            max-height: 500px; /* Increased maximum height */
-            min-height: 350px; /* Increased minimum height */
-            object-fit: cover; /* This ensures the image covers the container while maintaining aspect ratio */
-            object-position: center; /* Centers the image */
-            border-radius: 15px; /* Match container border radius */
-        }
+       .carousel-item img {
+           width: 100%;
+           height: 65vh; /* Increased height to match container */
+           max-height: 500px; /* Increased maximum height */
+           min-height: 350px; /* Increased minimum height */
+           object-fit: cover; /* This ensures the image covers the container while maintaining aspect ratio */
+           object-position: center; /* Centers the image */
+           border-radius: 15px; /* Match container border radius */
+       }
 
-        /* Optional: Add some overlay for better text readability if needed */
-        .carousel-item::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.1); /* Light overlay */
-            pointer-events: none;
-        }
+       /* Optional: Add some overlay for better text readability if needed */
+       .carousel-item::after {
+           content: '';
+           position: absolute;
+           top: 0;
+           left: 0;
+           right: 0;
+           bottom: 0;
+           background: rgba(0, 0, 0, 0.1); /* Light overlay */
+           pointer-events: none;
+       }
 
-        /* Category card hover effect */
-        .category-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: none;
-            border-radius: 10px;
-        }
+       /* Category card hover effect */
+       .category-card {
+           transition: transform 0.3s ease, box-shadow 0.3s ease;
+           border: none;
+           border-radius: 10px;
+       }
 
-        .category-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        }
+       .category-card:hover {
+           transform: translateY(-5px);
+           box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+       }
 
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .carousel-container {
-                height: 50vh;
-                max-height: 400px;
-                margin-top: 60px;
-                width: 90%; /* Slightly wider on tablets */
-            }
+       /* Responsive adjustments */
+       @media (max-width: 768px) {
+           .carousel-container {
+               height: 50vh;
+               max-height: 400px;
+               margin-top: 60px;
+               width: 90%; /* Slightly wider on tablets */
+           }
 
-            .carousel-item img {
-                height: 50vh;
-                max-height: 400px;
-            }
-        }
+           .carousel-item img {
+               height: 50vh;
+               max-height: 400px;
+           }
+       }
 
-        @media (max-width: 576px) {
-            .carousel-container {
-                height: 40vh;
-                max-height: 300px;
-                margin-top: 50px;
-                width: 95%; /* Almost full width on mobile */
-            }
+       @media (max-width: 576px) {
+           .carousel-container {
+               height: 40vh;
+               max-height: 300px;
+               margin-top: 50px;
+               width: 95%; /* Almost full width on mobile */
+           }
 
-            .carousel-item img {
-                height: 40vh;
-                max-height: 300px;
-            }
-        }
-        .five-per-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1.5rem;
-        justify-content: space-between;
-        padding: 1rem 0;
-    }
+           .carousel-item img {
+               height: 40vh;
+               max-height: 300px;
+           }
+       }
+       .five-per-row {
+       display: flex;
+       flex-wrap: wrap;
+       gap: 1.5rem;
+       justify-content: space-between;
+       padding: 1rem 0;
+   }
 
-    .five-per-row .category-card-wrapper {
-        flex: 0 0 calc(20% - 1.2rem);
-        box-sizing: border-box;
-        transition: transform 0.3s, box-shadow 0.3s;
-    }
+   .five-per-row .category-card-wrapper {
+       flex: 0 0 calc(20% - 1.2rem);
+       box-sizing: border-box;
+       transition: transform 0.3s, box-shadow 0.3s;
+   }
 
-    .category-card {
-        border: none;
-        border-radius: 16px;
-        padding: 1rem;
-        background: #ffffff;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s ease;
-        height: 100%;
-    }
+   .category-card {
+       border: none;
+       border-radius: 16px;
+       padding: 1rem;
+       background: #ffffff;
+       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+       transition: all 0.3s ease;
+       height: 100%;
+   }
 
-    .category-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-    }
+   .category-card:hover {
+       transform: translateY(-5px);
+       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+   }
 
-    .category-icon img {
-        width: 60px;
-        height: 60px;
-        object-fit: contain;
-        margin-bottom: 10px;
-    }
+   .category-icon img {
+       width: 60px;
+       height: 60px;
+       object-fit: contain;
+       margin-bottom: 10px;
+   }
 
-    .card-title {
-        font-weight: 600;
-        font-size: 1rem;
-        margin-bottom: 0.25rem;
-    }
+   .card-title {
+       font-weight: 600;
+       font-size: 1rem;
+       margin-bottom: 0.25rem;
+   }
 
-    .text-muted {
-        font-size: 0.875rem;
-        color: #6c757d;
-    }
+   .text-muted {
+       font-size: 0.875rem;
+       color: #6c757d;
+   }
 
-    @media (max-width: 992px) {
-        .five-per-row .category-card-wrapper {
-            flex: 0 0 48%;
-        }
-    }
+   @media (max-width: 992px) {
+       .five-per-row .category-card-wrapper {
+           flex: 0 0 48%;
+       }
+   }
 
-    @media (max-width: 576px) {
-        .five-per-row .category-card-wrapper {
-            flex: 0 0 100%;
-        }
-    }
+   @media (max-width: 576px) {
+       .five-per-row .category-card-wrapper {
+           flex: 0 0 100%;
+       }
+   }
     </style>
 </head>
 <body>
 <div th:replace="NavBar::layout(~{::section})"></div>
 <section>
+
     <div class="carousel-container">
         <div id="carouselExample" class="carousel slide carousel-fade h-100" data-bs-ride="carousel" data-bs-interval="3000">
             <div class="carousel-inner h-100">
@@ -187,6 +194,8 @@
         </div>
     </div>
     <!-- Products Section -->
+    <input type="hidden" id="current-user-id" th:value="${session.user != null ? session.user.userId : ''}" />
+    <input type="hidden" id="is-logged-in" th:value="${session.user != null}" />
     <div class="container my-5">
         <div class="text-center mb-4">
             <h2 class="fw-bold">Featured Products</h2>
@@ -194,56 +203,109 @@
         </div>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
             <div class="col" th:each="product : ${products}">
-                <!-- Card wrapped in anchor for click-to-detail -->
-                <a th:href="@{'/product/' + ${product.productId}}" class="text-decoration-none text-dark">
-                    <div class="card h-100 shadow-sm product-card">
-                        <img th:src="@{'/img/product/' + ${product.productImage}}" class="card-img-top p-2" alt="Product Image" style="height: 180px; object-fit: contain;">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title" th:text="${product.title}">Product Title</h5>
+                <div class="card h-100 shadow-sm product-card">
+                    <img th:src="@{'/img/product/' + ${product.productImage}}" class="card-img-top p-2"
+                         alt="Product Image" style="height: 180px; object-fit: contain;">
 
-                            <div class="mt-auto">
-                                <div th:if="${product.discountedPrice != null}">
-                                    <!-- Original Price -->
-                                    <span class="text-muted text-decoration-line-through me-2">
-                                    ₹ <span th:text="${product.price}">999</span>
-                                </span>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title" th:text="${product.title}">Product Title</h5>
 
-                                    <!-- Discounted Price -->
-                                    <span class="fw-bold text-success">
-                                    ₹ <span th:text="${product.discountedPrice}">799</span>
-                                </span>
+                        <!-- Price Display -->
+                        <div th:if="${product.discountedPrice != null}">
+                            <span class="text-muted text-decoration-line-through me-2">₹ <span th:text="${product.price}">999</span></span>
+                            <span class="fw-bold text-success">₹ <span th:text="${product.discountedPrice}">799</span></span>
+                            <span class="badge bg-danger ms-2"
+                                  th:with="discount=${product.price - product.discountedPrice},
+                                   percent=${(discount * 100) / product.price}"
+                                  th:text="|${percent.intValue()}% OFF|">
+                        20% OFF
+                        </span>
+                        </div>
+                        <div th:if="${product.discountedPrice == null}">
+                            <span class="fw-bold text-success">₹ <span th:text="${product.price}"></span></span>
+                        </div>
 
-                                    <!-- Discount Percentage -->
-                                    <span class="badge bg-danger ms-2"
-                                          th:with="discount=${product.price - product.discountedPrice},
-                                               percent=${(discount * 100) / product.price}"
-                                          th:text="|${percent.intValue()}% OFF|">
-                                    20% OFF
-                                </span>
-                                </div>
-
-                                <div th:if="${product.discountedPrice == null}">
-                                    <!-- No discount -->
-                                    <span class="fw-bold text-success">
-                                    ₹ <span th:text="${product.price}">999</span>
-                                </span>
-                                </div>
-
-                                <!-- Add to Cart button -->
-                                <a th:href="@{'ElectroHub/cart/add/' + ${product.productId}}"
-                                   class="btn btn-sm btn-outline-primary w-100 mt-3">
-                                    Add to Cart
-                                </a>
+                        <!-- Add to Cart Button -->
+                        <div class="mt-auto pt-3">
+                            <div class="input-group mb-3">
+                                <button class="btn btn-outline-secondary" type="button" onclick="decrementQuantity(this)">-</button>
+                                <input type="number" class="form-control text-center quantity-input"
+                                       value="1" min="1" th:attr="data-product-id=${product.productId}">
+                                <button class="btn btn-outline-secondary" type="button" onclick="incrementQuantity(this)">+</button>
                             </div>
+                            <button class="btn btn-primary w-100 add-to-cart-btn"
+                                    th:attr="data-product-id=${product.productId}"
+                                    onclick="addToCart(this)">
+                                Add to Cart
+                            </button>
                         </div>
                     </div>
-                </a>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Bootstrap JavaScript -->
+
+
+
+<script>
+    function addToCart(button) {
+        console.log("Add to Cart function started");
+
+        const isLoggedIn = document.getElementById('is-logged-in').value === 'true';
+        if (!isLoggedIn) {
+            alert('Please login to add items to cart');
+            window.location.href = '/login';
+            return;
+        }
+
+        const productId = button.getAttribute('data-product-id');
+        const quantityInput = button.closest('.card-body').querySelector('.quantity-input');
+        const quantity = parseInt(quantityInput.value);
+        const userId = document.getElementById('current-user-id').value;
+
+        console.log("Preparing to send:", {userId, productId, quantity});
+
+        fetch('/api/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
+            },
+            body: JSON.stringify({
+                userId: userId,
+                productId: productId,
+                quantity: quantity
+            })
+        })
+        .then(response => {
+            console.log("Received response status:", response.status);
+            if (!response.ok) {
+                return response.json().then(err => { throw err; });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Success:", data);
+            alert('Product added to cart!');
+            // Update cart count if you have one
+            const cartCount = document.getElementById('cart-count');
+            if (cartCount) {
+                const currentCount = parseInt(cartCount.textContent) || 0;
+                cartCount.textContent = currentCount + quantity;
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert(error.message || 'Failed to add to cart');
+        });
+    }
+</script>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+<!-- Bootstrap JavaScript -->
+

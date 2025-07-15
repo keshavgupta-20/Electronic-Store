@@ -9,8 +9,10 @@ import lombok.*;
 @Setter
 public class CartItemDto {
     private int cartItemId;
-
-    private ProductDto product;
+    private String productId;
+    private String productName;
+    private String productImage;
     private int quantity;
+    private int price;
     private int totalPrice;
 }

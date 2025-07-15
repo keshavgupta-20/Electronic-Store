@@ -21,11 +21,6 @@ public class OrderController {
     private OrderService orderService;
     //create
 
-    @PostMapping
-    public ResponseEntity<OrderDto> createOrder(@RequestBody CreateOrderRequest request){
-        OrderDto orderDto = orderService.createOrder(request);
-        return new ResponseEntity<>(orderDto, HttpStatus.OK);
-    }
 
     //remove
     @DeleteMapping("/{orderId}")
@@ -38,11 +33,7 @@ public class OrderController {
         return new ResponseEntity<>(resposeClass, HttpStatus.OK);
     }
     //getOrderOfUser
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<OrderDto>> getOrderOfUser(@PathVariable String userId){
-        List<OrderDto> orderOfUser=  orderService.getOrderOfUser(userId);
-        return new ResponseEntity<>(orderOfUser, HttpStatus.OK);
-    }
+
     //
     @GetMapping
     public ResponseEntity<PageableResponse<OrderDto>>  getOrders(
@@ -54,10 +45,7 @@ public class OrderController {
         return new ResponseEntity<>(orderDtos, HttpStatus.OK);
     }
 
-    @PutMapping("/admin/{orderId}")
-    public ResponseEntity<OrderDto> updateOrderByAdmin(@PathVariable String orderId, @RequestBody AdminUpdateOrder request) {
-        return ResponseEntity.ok(orderService.updateOrderByAdmin(orderId, request));
-    }
+
 
     @PutMapping("/user/{orderId}")
     public ResponseEntity<OrderDto> updateOrderByUser(@PathVariable String orderId, @RequestBody UserUpdateOrder request) {

@@ -1,0 +1,136 @@
+   /* Carousel styling for screen fit */
+       .carousel-container {
+           height: 65vh; /* Increased height for larger carousel */
+           max-height: 500px; /* Increased maximum height */
+           min-height: 350px; /* Increased minimum height */
+           overflow: hidden;
+           margin-top: 70px;
+           width: 80%; /* Reduced width to 80% of container */
+           margin-left: auto;
+           margin-right: auto;
+           border-radius: 15px; /* Added rounded corners for better appearance */
+           box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15); /* Added shadow for depth */
+       }
+
+       .carousel-item img {
+           width: 100%;
+           height: 65vh; /* Increased height to match container */
+           max-height: 500px; /* Increased maximum height */
+           min-height: 350px; /* Increased minimum height */
+           object-fit: cover; /* This ensures the image covers the container while maintaining aspect ratio */
+           object-position: center; /* Centers the image */
+           border-radius: 15px; /* Match container border radius */
+       }
+
+       /* Optional: Add some overlay for better text readability if needed */
+       .carousel-item::after {
+           content: '';
+           position: absolute;
+           top: 0;
+           left: 0;
+           right: 0;
+           bottom: 0;
+           background: rgba(0, 0, 0, 0.1); /* Light overlay */
+           pointer-events: none;
+       }
+
+
+       .category-card {
+           transition: transform 0.3s ease, box-shadow 0.3s ease;
+           border: none;
+           border-radius: 10px;
+       }
+       .category-card:hover {
+           transform: translateY(-5px);
+           box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+       }
+
+       /* Responsive adjustments */
+       @media (max-width: 768px) {
+           .carousel-container {
+               height: 50vh;
+               max-height: 400px;
+               margin-top: 60px;
+               width: 90%; /* Slightly wider on tablets */
+           }
+
+           .carousel-item img {
+               height: 50vh;
+               max-height: 400px;
+           }
+       }
+
+       @media (max-width: 576px) {
+           .carousel-container {
+               height: 40vh;
+               max-height: 300px;
+               margin-top: 50px;
+               width: 95%; /* Almost full width on mobile */
+           }
+
+           .carousel-item img {
+               height: 40vh;
+               max-height: 300px;
+           }
+       }
+        *{
+         box-sizing: border-box;
+       }
+      .five-per-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        justify-content: space-between;
+        padding: 1rem 0;
+      }
+
+   .five-per-row .category-card-wrapper {
+       flex: 0 0 calc(20% - 1.2rem);
+       box-sizing: border-box;
+       transition: transform 0.3s, box-shadow 0.3s;
+   }
+
+   .category-card {
+       border: none;
+       border-radius: 16px;
+       padding: 1rem;
+       background: #ffffff;
+       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+       transition: all 0.3s ease;
+       height: 100%;
+   }
+
+   .category-card:hover {
+       transform: translateY(-5px);
+       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+   }
+
+   .category-icon img {
+       width: 60px;
+       height: 60px;
+       object-fit: contain;
+       margin-bottom: 10px;
+   }
+
+   .card-title {
+       font-weight: 600;
+       font-size: 1rem;
+       margin-bottom: 0.25rem;
+   }
+
+   .text-muted {
+       font-size: 0.875rem;
+       color: #6c757d;
+   }
+
+   @media (max-width: 992px) {
+       .five-per-row .category-card-wrapper {
+           flex: 0 0 48%;
+       }
+   }
+
+   @media (max-width: 576px) {
+       .five-per-row .category-card-wrapper {
+           flex: 0 0 100%;
+       }
+   }

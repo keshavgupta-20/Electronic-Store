@@ -1,20 +1,26 @@
 package com.yash.Electronic.store.controller;
 
 import com.yash.Electronic.store.dtos.*;
+import com.yash.Electronic.store.entites.CartItem;
 import com.yash.Electronic.store.helpers.LoginHelper;
+import com.yash.Electronic.store.repository.CartItemRepo;
 import com.yash.Electronic.store.service.*;
 import com.yash.Electronic.store.repository.UserRepo;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/ElectroHub")
@@ -37,10 +43,18 @@ public class HomeController {
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private CartItemRepo cartItemRepo;
+
 
 
     @RequestMapping("/")
-    public String LandingPage(Authentication authentication, HttpSession session, Model model){
+    public String LandingPage(Authentication authentication, HttpSession session, Model model, HttpServletRequest request){
+
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+        System.out.println(csrfToken);
+        model.addAttribute("_csrf", csrfToken);
+
         List<CategoryDto> list = categoryService.getAllCategory();
         for (int i =0;i<list.size();i++){
             System.out.println(list.get(i));;
@@ -58,7 +72,7 @@ public class HomeController {
                         getAuthorities().
                         stream().
                         anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-                session.setAttribute("userObj", user);
+                session.setAttribute("user", user);
                 session.setAttribute("isAdmin", isAdmin);
                 if (isAdmin) {
 
@@ -121,21 +135,39 @@ public class HomeController {
         return "deals";
     }
 
-    @RequestMapping("/cart")
-    public String cart(){
-        return "cart";
-    }
+
 
     @RequestMapping("/wishlist")
     public String whislist(){
         return "wishlist";
     }
-//    @PostMapping("cart/product/{productId}/user/{userId}")
-//    public String addItemTocart(@PathVariable String userId, @PathVariable String productId){
-//        CartDto cartDto = cartService.addItemToCart(userId, productId);
-//        return ;
-//    }
 
+    @Autowired
+    private ModelMapper mapper;
+    @GetMapping("/cart/{userId}")
+    public String getCart(@PathVariable String userId, Model model){
+        CartDto cartDto = cartService.getCartByUser(userId);
+        List<CartItemDto> item = cartDto.getItems();
 
+        int finalTotalPrice = item.stream()
+                .mapToInt(CartItemDto::getTotalPrice)
+                .sum();
 
+        model.addAttribute("finalPrice",  finalTotalPrice);
+        model.addAttribute("cart", item);
+        model.addAttribute("user", userId);
+
+        return "cart";
+    }
+    @RequestMapping("/cart/{userId}/items/{itemId}")
+    public String removeItemToCart(@PathVariable String userId, @PathVariable int itemId){
+        cartService.removeItemFromCart(userId, itemId);
+        return "redirect:/ElectroHub/cart/" + userId;
+    }
+
+    @RequestMapping("/cart/{userId}/clear")
+    public String clearCart(@PathVariable String userId){
+        cartService.clearCart(userId);
+        return "redirect:/ElectroHub/cart/" + userId;
+    }
 }
