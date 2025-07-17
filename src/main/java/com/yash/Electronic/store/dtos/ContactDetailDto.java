@@ -33,4 +33,5 @@ public class ContactDetailDto {
     private String contactNo;
 
     private String userId;
+
 }

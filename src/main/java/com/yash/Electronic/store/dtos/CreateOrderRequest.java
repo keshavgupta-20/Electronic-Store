@@ -19,7 +19,7 @@ public class CreateOrderRequest {
     private String orderStatus ="PENDING";
 
 
-    private String paymentStatus= "NOTPAID";
+    private String paymentStatus;
     private String billingAddress;
     private String billingPhone;
     private String billingName;

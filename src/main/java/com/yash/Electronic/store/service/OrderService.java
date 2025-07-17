@@ -23,6 +23,8 @@ public interface OrderService {
     PageableResponse<OrderDto> getUser(int pageNumber, int pageSize, String sortBy, String sortDir);
     OrderDto updateOrderByAdmin(String orderId, AdminUpdateOrder request);
     OrderDto updateOrderByUser(String orderId, UserUpdateOrder request);
-
+    void addAddressDetail(ContactDetailDto contactDetailDto);
+    List<ContactDetailDto> addressDetailByUser(String userId);
+    ContactDetailDto contactDetailById(String contactDetailId);
 
 }

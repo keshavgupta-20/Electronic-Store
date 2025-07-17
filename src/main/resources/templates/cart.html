@@ -46,23 +46,36 @@
             </div>
 
         </div>
-        <div class="text-end mt-4" th:if="${!#lists.isEmpty(cart)}">
-            <h4>Total Amount: ₹<span th:text="${finalPrice}">0</span></h4>
 
-            <div class="d-flex justify-content-end gap-3 mt-3">
-                <a th:href="@{'/ElectroHub/cart/' + ${user} + '/clear'}"
-                   class="btn btn-outline-danger">Clear Cart</a>
+        <!-- Address Selection Section -->
+        <form th:action="@{/ElectroHub/orders/checkout}" method="post">
+            <input type="hidden" name="userId" th:value="${userId}" />
+            <input type="hidden" name="cartId" th:value="${cartId}" />
 
-                <a th:href="@{/checkout}" class="btn btn-success">Proceed to Checkout</a>
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div th:each="addr : ${addresses}" class="col">
+                    <div class="card border-success shadow-sm">
+                        <div class="card-body">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="addressId"
+                                       th:id="'address-' + ${addr.contactDetailId}" th:value="${addr.contactDetailId}" required>
+                                <label class="form-check-label" th:for="'address-' + ${addr.contactDetailId}">
+                                    <strong th:text="${addr.houseNo} + ', ' + ${addr.street}">123, Main St</strong><br>
+                                    <span th:text="${addr.city + ' - ' + addr.pincode + ', ' + addr.country}">City</span><br>
+                                    <span th:text="'Contact: ' + ${addr.contactNo}">Phone</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
 
+            <div class="text-end mt-3">
+                <a th:href="@{'/ElectroHub/orders/address/add/' + ${userId}}" class="btn btn-outline-primary me-2">Add New Address</a>
+                <button type="submit" class="btn btn-success">Proceed to Checkout</button>
+            </div>
+        </form>
 
-    </div>
-
-    <div class="text-end mt-4" th:if="${!#lists.isEmpty(cart)}">
-        <h4>Total Amount: ₹<span th:text="${finalPrice}">0</span></h4>
-        <a th:href="@{/checkout}" class="btn btn-success mt-3">Proceed to Checkout</a>
     </div>
 </div>
 

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,9 @@ public class HomeController {
 
     @Autowired
     private CartItemRepo cartItemRepo;
+
+    @Autowired
+    private OrderService orderService;
 
 
 
@@ -198,8 +202,14 @@ public class HomeController {
                 .sum();
 
         model.addAttribute("finalPrice",  finalTotalPrice);
+        model.addAttribute("cartId",cartDto.getCartId());
         model.addAttribute("cart", item);
         model.addAttribute("user", userId);
+        List<ContactDetailDto> contactDetailDto = new ArrayList<>();
+        model.addAttribute("addresses", contactDetailDto);
+        List<ContactDetailDto> contactDetailDtoList = orderService.addressDetailByUser(userId);
+        model.addAttribute("addresses", contactDetailDtoList);
+
 
         return "cart";
     }

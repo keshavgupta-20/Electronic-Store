@@ -6,14 +6,11 @@ import com.yash.Electronic.store.entites.*;
 import com.yash.Electronic.store.exception.BadApiRequest;
 import com.yash.Electronic.store.exception.ResourceNotFoundException;
 import com.yash.Electronic.store.helpers.Helper;
+import com.yash.Electronic.store.repository.*;
 import com.yash.Electronic.store.service.OrderService;
 
 
 import com.yash.Electronic.store.dtos.*;
-import com.yash.Electronic.store.repository.CartRepo;
-import com.yash.Electronic.store.repository.OrderItemRepo;
-import com.yash.Electronic.store.repository.OrderServiceRepo;
-import com.yash.Electronic.store.repository.UserRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -44,53 +42,83 @@ public  class OrderServiceImpl implements OrderService {
     @Autowired
     private CartRepo cartRepo;
 
+    @Autowired
+    private ContactDetailRepo contactDetailRepo;
+
+    @Autowired
+    private ProductRepo productRepo;
 
 
     @Override
     public OrderDto createOrder(CreateOrderRequest orderDto) {
-        String userId = orderDto.getUserId();
-        String cartId = orderDto.getCartId();
-        User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User does not exist with given id"));
-        Cart cart = cartRepo.findById(cartId).orElseThrow(() -> new ResourceNotFoundException("User does not exist with given id"));
-        List<CartItem> cartItems = cart.getItems();
-        if (cartItems.size() <= 0) {
-            throw new BadApiRequest("Invalid number of item in the cart");
+            String userId = orderDto.getUserId();
+            String cartId = orderDto.getCartId();
+
+            // Fetch user and cart
+            User user = userRepo.findById(userId)
+                    .orElseThrow(() -> new ResourceNotFoundException("User does not exist with given ID"));
+
+            Cart cart = cartRepo.findById(cartId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Cart does not exist with given ID"));
+
+            List<CartItem> cartItems = cart.getItems();
+            if (cartItems == null || cartItems.isEmpty()) {
+                throw new BadApiRequest("Cart has no items.");
+            }
+
+            // Create Order
+            Order order = Order.builder()
+                    .orderId(UUID.randomUUID().toString())
+                    .billingName(orderDto.getBillingName())
+                    .billingPhone(orderDto.getBillingPhone())
+                    .billingAddress(orderDto.getBillingAddress())
+                    .orderedDate(new Date())
+                    .deliveredDate(null)
+                    .paymentStatus(orderDto.getPaymentStatus())
+                    .orderStatus(orderDto.getOrderStatus())
+                    .user(user)
+                    .build();
+
+            AtomicReference<Integer> totalOrderAmount = new AtomicReference<>(0);
+
+            List<OrderItem> orderItems = cartItems.stream().map(cartItem -> {
+                Product product = cartItem.getProduct();
+                int orderedQuantity = cartItem.getQuantity();
+
+                // Reduce product quantity
+                if (product.getQuantity() < orderedQuantity) {
+                    throw new BadApiRequest("Product " + product.getTitle() + " does not have enough stock.");
+                }
+
+                product.setQuantity(product.getQuantity() - orderedQuantity);
+                productRepo.save(product); // ✅ save updated product
+
+                // Create OrderItem
+                OrderItem orderItem = OrderItem.builder()
+                        .product(product)
+                        .quantity(orderedQuantity)
+                        .totalPrice(orderedQuantity * product.getDiscountedPrice())
+                        .order(order)
+                        .build();
+
+                totalOrderAmount.updateAndGet(amount -> amount + orderItem.getTotalPrice());
+                return orderItem;
+            }).collect(Collectors.toList());
+
+            order.setOrderItems(orderItems);
+            order.setOrderAmount(totalOrderAmount.get());
+
+            // Clear the cart
+            cart.getItems().clear();
+            cartRepo.save(cart);
+
+            // Save the order
+            Order savedOrder = orderServiceRepo.save(order);
+
+            return mapper.map(savedOrder, OrderDto.class);
         }
-        //other checks
-//        Order order = Order.builder().billingName(orderDto.getBillingName())
-//                .billingPhone((orderDto.getBillingPhone()))
-//                .billingAddress(orderDto.getBillingAddress())
-//                .orderedDate(new Date())
-//                .deliveredDate(null)
-//                .paymentStatus(orderDto.getPaymentStatus())
-//                .orderStatus(orderDto.getOrderStatus())
-//                .orderId(UUID.randomUUID().toString())
-//                .user(user).build();
-//        AtomicReference<Integer> orderAmount = new AtomicReference<>(0);
-//        List<OrderItem> orderItems = cartItems.stream().map(cartItem -> {
-////            CartItem->OrderItem
-//            OrderItem orderItem = OrderItem.builder()
-//                    .quantity(cartItem.getQuantity())
-//                    .product(cartItem.getProduct())
-//                    .totalPrice(cartItem.getQuantity() * cartItem.getProduct().getDiscountedPrice())
-//                    .order(order)
-//                    .build();
-//
-//            orderAmount.set(orderAmount.get() + orderItem.getTotalPrice());
-//            return orderItem;
-//        }).collect(Collectors.toList());
-//
-//        order.setOrderItems(orderItems);
-//        order.setOrderAmount(orderAmount.get());
-//
-//        //
-//        cart.getItems().clear();
-//        cartRepo.save(cart);
-//        Order savedOrder = orderServiceRepo.save(order);
-//        return mapper.map(savedOrder, OrderDto.class);
-//    }
-        return mapper.map(orderDto, OrderDto.class);
-    }
+
+
 
     @Override
     public void removeOrder(String orderId) {
@@ -142,6 +170,29 @@ public  class OrderServiceImpl implements OrderService {
         Order updatedOrder = orderServiceRepo.save(order);
         return mapper.map(updatedOrder, OrderDto.class);
     }
+    public void addAddressDetail(ContactDetailDto contactDetailDto){
+        ContactDetail contactDetail= mapper.map(contactDetailDto, ContactDetail.class);
+        contactDetailRepo.save(contactDetail);
+    }
+
+    public List<ContactDetailDto> addressDetailByUser(String userId){
+        List<ContactDetail> contactDetails = contactDetailRepo.findByUserUserId(userId);
+        List<ContactDetailDto> contactDetailDtoList = contactDetails.stream()
+                .map(detail -> mapper.map(detail, ContactDetailDto.class))
+                .toList();
+
+        return contactDetailDtoList;
+    }
+
+    @Override
+    public ContactDetailDto contactDetailById(String contactDetailId) {
+        Optional<ContactDetail> contactDetail = contactDetailRepo.findById(contactDetailId);
+        return mapper.map(contactDetail, ContactDetailDto.class);
+
+
+    }
+
+
 
 
 

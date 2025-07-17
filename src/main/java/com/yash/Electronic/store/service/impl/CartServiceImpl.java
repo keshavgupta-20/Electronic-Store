@@ -7,7 +7,6 @@ import com.yash.Electronic.store.entites.User;
 import com.yash.Electronic.store.exception.BadApiRequest;
 import com.yash.Electronic.store.exception.ResourceNotFoundException;
 import com.yash.Electronic.store.service.CartService;
-import com.yash.Electronic.store.dtos.AddItemToCartRequest;
 import com.yash.Electronic.store.dtos.CartDto;
 
 import com.yash.Electronic.store.repository.CartItemRepo;
@@ -20,10 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
+
 @Service
 public class CartServiceImpl implements CartService {
     @Autowired

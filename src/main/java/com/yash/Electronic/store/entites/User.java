@@ -27,7 +27,7 @@ public class User implements UserDetails {
 
     @Id
     @Column(name = "user_id")
-    private  String UserId;
+    private  String userId;
     @Column(name = "user_name")
     private String name;
     @Column(name = "user_email",unique = true)
