@@ -1,5 +1,6 @@
 package com.yash.Electronic.store.service.impl;
 
+import com.yash.Electronic.store.dtos.CartItemDto;
 import com.yash.Electronic.store.entites.Cart;
 import com.yash.Electronic.store.entites.CartItem;
 import com.yash.Electronic.store.entites.Product;
@@ -19,7 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -61,6 +64,7 @@ public class CartServiceImpl implements CartService {
         boolean found = false;
         for (CartItem item : cart.getItems()) {
             if (item.getProduct().getProductId().equals(productId)) {
+
                 int updatedQty = item.getQuantity() + quantity;
                 item.setQuantity(updatedQty);
                 item.setTotalPrice(updatedQty * product.getPrice());
@@ -108,8 +112,31 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDto getCartByUser(String userId) {
-        User user =  userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
-        Cart cart = cartRepo.findByUser(user).orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
-        return modelMapper.map(cart, CartDto.class);
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
+
+        Cart cart = cartRepo.findByUser(user)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart does not exist"));
+
+        // Manually map cart to CartDto (except items)
+        CartDto cartDto = new CartDto();
+        cartDto.setCartId(cart.getCartId());
+        cartDto.setCreatedAt(cart.getCreatedAt());
+
+        List<CartItemDto> cartItemDtos = cart.getItems().stream().map(cartItem -> {
+            CartItemDto dto = modelMapper.map(cartItem, CartItemDto.class);
+
+
+            if (cartItem.getProduct() != null) {
+                dto.setProductName(cartItem.getProduct().getTitle());
+                dto.setProductImage(cartItem.getProduct().getProductImage());
+            }
+
+            return dto;
+        }).collect(Collectors.toList());
+
+        cartDto.setItems(cartItemDtos);
+        return cartDto;
     }
+
 }

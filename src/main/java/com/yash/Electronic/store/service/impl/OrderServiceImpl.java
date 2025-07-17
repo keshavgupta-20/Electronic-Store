@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -49,74 +50,68 @@ public  class OrderServiceImpl implements OrderService {
     private ProductRepo productRepo;
 
 
+    @Transactional
     @Override
     public OrderDto createOrder(CreateOrderRequest orderDto) {
-            String userId = orderDto.getUserId();
-            String cartId = orderDto.getCartId();
+        String userId = orderDto.getUserId();
+        String cartId = orderDto.getCartId();
 
-            // Fetch user and cart
-            User user = userRepo.findById(userId)
-                    .orElseThrow(() -> new ResourceNotFoundException("User does not exist with given ID"));
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
 
-            Cart cart = cartRepo.findById(cartId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Cart does not exist with given ID"));
+        Cart cart = cartRepo.findById(cartId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart does not exist"));
 
-            List<CartItem> cartItems = cart.getItems();
-            if (cartItems == null || cartItems.isEmpty()) {
-                throw new BadApiRequest("Cart has no items.");
+        List<CartItem> cartItems = cart.getItems();
+        if (cartItems == null || cartItems.isEmpty()) {
+            throw new BadApiRequest("Cart has no items.");
+        }
+
+        Order order = Order.builder()
+                .orderId(UUID.randomUUID().toString())
+                .billingName(orderDto.getBillingName())
+                .billingPhone(orderDto.getBillingPhone())
+                .billingAddress(orderDto.getBillingAddress())
+                .orderedDate(new Date())
+                .deliveredDate(null)
+                .paymentStatus(orderDto.getPaymentStatus())
+                .orderStatus(orderDto.getOrderStatus())
+                .user(user)
+                .orderAmount(orderDto.getOrderAmount()).build();
+
+        AtomicReference<Integer> totalOrderAmount = new AtomicReference<>(0);
+
+        List<OrderItem> orderItems = cartItems.stream().map(cartItem -> {
+            Product product = cartItem.getProduct();
+            int orderedQuantity = cartItem.getQuantity();
+
+            if (product.getQuantity() < orderedQuantity) {
+                throw new BadApiRequest("Product " + product.getTitle() + " does not have enough stock.");
             }
 
-            // Create Order
-            Order order = Order.builder()
-                    .orderId(UUID.randomUUID().toString())
-                    .billingName(orderDto.getBillingName())
-                    .billingPhone(orderDto.getBillingPhone())
-                    .billingAddress(orderDto.getBillingAddress())
-                    .orderedDate(new Date())
-                    .deliveredDate(null)
-                    .paymentStatus(orderDto.getPaymentStatus())
-                    .orderStatus(orderDto.getOrderStatus())
-                    .user(user)
-                    .build();
+            product.setQuantity(product.getQuantity() - orderedQuantity);
+            productRepo.save(product);
 
-            AtomicReference<Integer> totalOrderAmount = new AtomicReference<>(0);
+            OrderItem orderItem = OrderItem.builder()
+                    .product(product)
+                    .quantity(orderedQuantity)
+                    .totalPrice(orderedQuantity * product.getDiscountedPrice())
+                    .order(order)
+                    .build(); // ✅ Let JPA assign ID
 
-            List<OrderItem> orderItems = cartItems.stream().map(cartItem -> {
-                Product product = cartItem.getProduct();
-                int orderedQuantity = cartItem.getQuantity();
+            totalOrderAmount.updateAndGet(amount -> amount + orderItem.getTotalPrice());
+            return orderItem;
+        }).collect(Collectors.toList());
 
-                // Reduce product quantity
-                if (product.getQuantity() < orderedQuantity) {
-                    throw new BadApiRequest("Product " + product.getTitle() + " does not have enough stock.");
-                }
+        order.setOrderItems(orderItems);
+        order.setOrderAmount(totalOrderAmount.get());
 
-                product.setQuantity(product.getQuantity() - orderedQuantity);
-                productRepo.save(product); // ✅ save updated product
+        cart.getItems().clear();
+        cartRepo.save(cart);
 
-                // Create OrderItem
-                OrderItem orderItem = OrderItem.builder()
-                        .product(product)
-                        .quantity(orderedQuantity)
-                        .totalPrice(orderedQuantity * product.getDiscountedPrice())
-                        .order(order)
-                        .build();
-
-                totalOrderAmount.updateAndGet(amount -> amount + orderItem.getTotalPrice());
-                return orderItem;
-            }).collect(Collectors.toList());
-
-            order.setOrderItems(orderItems);
-            order.setOrderAmount(totalOrderAmount.get());
-
-            // Clear the cart
-            cart.getItems().clear();
-            cartRepo.save(cart);
-
-            // Save the order
-            Order savedOrder = orderServiceRepo.save(order);
-
-            return mapper.map(savedOrder, OrderDto.class);
-        }
+        Order savedOrder = orderServiceRepo.save(order);
+        return mapper.map(savedOrder, OrderDto.class);
+    }
 
 
 
@@ -187,10 +182,13 @@ public  class OrderServiceImpl implements OrderService {
     @Override
     public ContactDetailDto contactDetailById(String contactDetailId) {
         Optional<ContactDetail> contactDetail = contactDetailRepo.findById(contactDetailId);
-        return mapper.map(contactDetail, ContactDetailDto.class);
-
-
+        if (contactDetail.isPresent()) {
+            return mapper.map(contactDetail.get(), ContactDetailDto.class);
+        } else {
+            return null; // or throw an exception depending on your use case
+        }
     }
+
 
 
 

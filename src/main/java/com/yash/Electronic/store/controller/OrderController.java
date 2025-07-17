@@ -115,27 +115,57 @@ public class OrderController {
                                     @RequestParam String addressId,
                                     Model model) {
 
-        model.addAttribute("userId", userId);
-        CartDto cartDto = cartService.getCartByUser(userId);
-        List<CartItemDto> item = cartDto.getItems();
 
-        int finalTotalPrice = item.stream()
+        model.addAttribute("userId", userId);
+
+
+        CartDto cartDto = cartService.getCartByUser(userId);
+        List<CartItemDto> items = cartDto.getItems();
+
+
+        if (items == null || items.isEmpty()) {
+            model.addAttribute("error", "Your cart is empty.");
+            return "error-page"; // redirect to an error page or show message
+        }
+
+        // Debugging: check productName
+        for (CartItemDto cartItemDto : items) {
+            System.out.println("Product Name: " + cartItemDto.getProductName());
+            System.out.println("Quantity: " + cartItemDto.getQuantity());
+            System.out.println("Total Price: " + cartItemDto.getTotalPrice());
+        }
+
+        // Calculate total price
+        int finalTotalPrice = items.stream()
                 .mapToInt(CartItemDto::getTotalPrice)
                 .sum();
 
-        model.addAttribute("totalPrice",  finalTotalPrice);
-        model.addAttribute("cartItems", item);
+        // Add cart and price details to model
+        model.addAttribute("totalPrice", finalTotalPrice);
+        model.addAttribute("cartItems", items);
         model.addAttribute("cartId", cartId);
+
+        // Get and set contact address
+        System.out.println("Address ID: " + addressId);
         ContactDetailDto contactDetailDto = orderService.contactDetailById(addressId);
-        model.addAttribute("address", addressId);
+
+        if (contactDetailDto == null) {
+            model.addAttribute("error", "Address not found.");
+            return "error-page";
+        }
+
+        model.addAttribute("address", contactDetailDto);
         model.addAttribute("user", userId);
-        return "checkout-page"; }
-    @PostMapping("/ElectroHub/orders/place")
+
+        return "checkout-page";
+    }
+
+    @PostMapping("/place")
     public String placeOrder(@RequestParam String userId,
                              @RequestParam String cartId,
                              @RequestParam String addressId,
                              @RequestParam String paymentMethod,
-                             @RequestParam double totalPrice
+                             @RequestParam int totalPrice
                              ) {
         ContactDetailDto contactDetailDto = orderService.contactDetailById(addressId);
         CreateOrderRequest createOrderRequest = new CreateOrderRequest();
@@ -146,8 +176,15 @@ public class OrderController {
                 "," + contactDetailDto.getCity() +  "," + contactDetailDto.getCountry() + "," + contactDetailDto.getPincode();
         createOrderRequest.setBillingPhone(userAddresss);
         createOrderRequest.setPaymentStatus(paymentMethod);
-        System.out.println(userAddresss);
+        createOrderRequest.setOrderAmount(totalPrice);
+        orderService.createOrder(createOrderRequest);
+
         return "redirect:/ElectroHub/orders/success";
+    }
+
+    @GetMapping("/success")
+    public String  sucecss(){
+        return "success";
     }
 
 

@@ -14,7 +14,8 @@ import lombok.*;
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int cartItemId;
+    private Integer cartItemId;
+
 
     @ManyToOne
     @JoinColumn(name = "product_id")

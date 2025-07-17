@@ -17,6 +17,7 @@ public class CreateOrderRequest {
     private String cartId;
     private String userId;
     private String orderStatus ="PENDING";
+    private int orderAmount;
 
 
     private String paymentStatus;
