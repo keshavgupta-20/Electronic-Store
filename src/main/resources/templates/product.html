@@ -2,75 +2,149 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>ShopEase - Products</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}" />
-    <style>
-
-    </style>
 </head>
 <body>
 
+<!-- Navigation Bar -->
 <div th:replace="NavBar::layout(~{::section})"></div>
 
 <section class="container my-4">
-    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3">
-        <div class="col" th:each="product : ${products}">
-            <div class="product-card text-center">
-                <img th:src="@{'/img/product/' + ${product.productImage}}" th:alt="${product.title}" class="product-image mb-2"/>
+    <input type="hidden" id="current-user-id" th:value="${session.user != null ? session.user.userId : ''}" />
+    <input type="hidden" id="is-logged-in" th:value="${session.user != null}" />
+    <div class="container my-5">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Featured Products</h2>
+            <p class="text-muted">Explore our best-selling electronics</p>
+        </div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            <div class="col" th:each="product : ${products}">
+                <div class="card h-100 shadow-sm product-card">
+                    <img th:src="@{'/img/product/' + ${product.productImage}}" class="card-img-top p-2"
+                         alt="Product Image" style="height: 180px; object-fit: contain;">
 
-                <div class="product-title" th:text="${product.title}">Product Title</div>
-                <div class="product-desc text-muted" th:text="${product.description}">Product description</div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title" th:text="${product.title}">Product Title</h5>
 
-                <div class="mt-1">
-                    <span th:if="${product.discountedPrice != null}">
-                        <span class="original-price">₹ <span th:text="${product.price}">999</span></span>
-                        <span class="discounted-price ms-1">₹ <span th:text="${product.discountedPrice}">799</span></span>
-                        <span class="discount-badge"
-                              th:with="discount=${product.price - product.discountedPrice},
-                                       percent=${(discount * 100) / product.price}"
-                              th:text="|${percent.intValue()}% OFF|">20% OFF</span>
-                    </span>
-                    <span th:if="${product.discountedPrice == null}" class="discounted-price">₹ <span th:text="${product.price}">999</span></span>
-                </div>
+                        <!-- Price Display -->
+                        <div th:if="${product.discountedPrice != null}">
+                            <span class="text-muted text-decoration-line-through me-2">₹ <span th:text="${product.price}">999</span></span>
+                            <span class="fw-bold text-success">₹ <span th:text="${product.discountedPrice}">799</span></span>
+                            <span class="badge bg-danger ms-2"
+                                  th:with="discount=${product.price - product.discountedPrice},
+                                   percent=${(discount * 100) / product.price}"
+                                  th:text="|${percent.intValue()}% OFF|">
+                        20% OFF
+                        </span>
+                        </div>
+                        <div th:if="${product.discountedPrice == null}">
+                            <span class="fw-bold text-success">₹ <span th:text="${product.price}"></span></span>
+                        </div>
 
-                <div class="mt-1">
-                    <span class="out-of-stock text-danger" th:if="${product.quantity <= 0}">Out of Stock</span>
-                </div>
-
-                <div class="mt-2">
-
-                    <a th:href="@{'/cart/add/' + ${product.productId}}"
-                       class="btn btn-primary btn-sm btn-sm-custom"
-                       th:if="${product.quantity > 0}">
-                        Add to cart
-                    </a>
+                        <!-- Add to Cart Button -->
+                        <div class="mt-auto pt-3">
+                            <div class="input-group mb-3">
+                                <button class="btn btn-outline-secondary" type="button" onclick="decrementQuantity(this)">-</button>
+                                <input type="number" class="form-control text-center quantity-input"
+                                       value="1" min="1" th:attr="data-product-id=${product.productId}">
+                                <button class="btn btn-outline-secondary" type="button" onclick="incrementQuantity(this)">+</button>
+                            </div>
+                            <button class="btn btn-primary w-100 add-to-cart-btn"
+                                    th:attr="data-product-id=${product.productId}"
+                                    onclick="addToCart(this)">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Pagination -->
-    <nav th:if="${totalPages > 1}" class="mt-4" aria-label="Page navigation">
+
+<!-- Pagination -->
+    <nav th:if="${totalPages > 1}" class="mt-4">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${pageNumber == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{'/ElectroHub/products'(pageNumber=${pageNumber - 1}, pageSize=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir})}">Previous</a>
+                <a class="page-link"
+                   th:href="@{'/electrohub/products'(pageNumber=${pageNumber - 1}, pageSize=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir})}">Previous</a>
             </li>
 
             <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                 th:classappend="${i == pageNumber} ? 'active'">
                 <a class="page-link"
-                   th:href="@{'/ElectroHub/products'(pageNumber=${i}, pageSize=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir})}"
+                   th:href="@{'/electrohub/products'(pageNumber=${i}, pageSize=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir})}"
                    th:text="${i + 1}">1</a>
             </li>
 
             <li class="page-item" th:classappend="${pageNumber + 1 == totalPages} ? 'disabled'">
-                <a class="page-link" th:href="@{'/ElectroHub/products'(pageNumber=${pageNumber + 1}, pageSize=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir})}">Next</a>
+                <a class="page-link"
+                   th:href="@{'/electrohub/products'(pageNumber=${pageNumber + 1}, pageSize=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir})}">Next</a>
             </li>
         </ul>
     </nav>
 </section>
+<script>
+    function addToCart(button) {
+        console.log("Add to Cart function started");
 
+        const isLoggedIn = document.getElementById('is-logged-in').value === 'true';
+        if (!isLoggedIn) {
+            alert('Please login to add items to cart');
+            window.location.href = '/login';
+            return;
+        }
+
+        const productId = button.getAttribute('data-product-id');
+        const quantityInput = button.closest('.card-body').querySelector('.quantity-input');
+        const quantity = parseInt(quantityInput.value);
+        const userId = document.getElementById('current-user-id').value;
+
+        console.log("Preparing to send:", {userId, productId, quantity});
+
+        fetch('/api/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
+            },
+            body: JSON.stringify({
+                userId: userId,
+                productId: productId,
+                quantity: quantity
+            })
+        })
+        .then(response => {
+            console.log("Received response status:", response.status);
+            if (!response.ok) {
+                return response.json().then(err => { throw err; });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Success:", data);
+            alert('Product added to cart!');
+            // Update cart count if you have one
+            const cartCount = document.getElementById('cart-count');
+            if (cartCount) {
+                const currentCount = parseInt(cartCount.textContent) || 0;
+                cartCount.textContent = currentCount + quantity;
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert(error.message || 'Failed to add to cart');
+        });
+    }
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

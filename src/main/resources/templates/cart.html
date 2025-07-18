@@ -12,7 +12,7 @@
     <h2 class="mb-4">Your Shopping Cart</h2>
 
     <div th:if="${#lists.isEmpty(cart)}">
-        <p>Your cart is empty. <a th:href="@{/ElectroHub/}">Continue shopping</a>.</p>
+        <p>Your cart is empty. <a th:href="@{/electrohub/}">Continue shopping</a>.</p>
     </div>
 
     <div th:if="${!#lists.isEmpty(cart)}" class="row g-4">
@@ -36,7 +36,7 @@
                             </div>
 
                             <!-- Remove Button -->
-                            <form th:action="@{'/ElectroHub/cart/' + ${user} + '/items/' + ${item.cartItemId}}" method="post">
+                            <form th:action="@{'/electrohub/cart/' + ${user} + '/items/' + ${item.cartItemId}}" method="post">
                                 <input type="hidden" name="productId" th:value="${item.productId}"/>
                                 <button type="submit" class="btn btn-danger w-100 mt-2">Remove</button>
                             </form>
@@ -48,7 +48,7 @@
         </div>
 
         <!-- Address Selection Section -->
-        <form th:action="@{/ElectroHub/orders/checkout}" method="post">
+        <form th:action="@{/electrohub/orders/checkout}" method="post">
             <input type="hidden" name="userId" th:value="${userId}" />
             <input type="hidden" name="cartId" th:value="${cartId}" />
 
@@ -71,7 +71,7 @@
             </div>
 
             <div class="text-end mt-3">
-                <a th:href="@{'/ElectroHub/orders/address/add/' + ${userId}}" class="btn btn-outline-primary me-2">Add New Address</a>
+                <a th:href="@{'/electrohub/orders/address/add/' + ${userId}}" class="btn btn-outline-primary me-2">Add New Address</a>
                 <button type="submit" class="btn btn-success">Proceed to Checkout</button>
             </div>
         </form>

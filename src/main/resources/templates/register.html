@@ -22,7 +22,7 @@
     <div class="bg-white shadow-lg rounded-4 p-5 w-100" style="max-width: 500px;">
       <h2 class="text-center mb-4 font-bold text-3xl">Create Account</h2>
 
-      <form th:action="@{/ElectroHub/user/do-register}" method="post" th:object="${registerUser}">
+      <form th:action="@{/electrohub/user/do-register}" method="post" th:object="${registerUser}">
 
         <!-- Global password mismatch error -->
         <div th:if="${passwordMismatch}" class="text-danger mb-3" th:text="${passwordMismatch}"></div>

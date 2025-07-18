@@ -19,9 +19,9 @@ public class NoCacheFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         // Add cache-control headers
-        if (request.getRequestURI().startsWith("/ElectroHub/wishlist") ||
-                request.getRequestURI().startsWith("/ElectroHub/cart") ||
-                request.getRequestURI().startsWith("/ElectroHub/admin")) {
+        if (request.getRequestURI().startsWith("/electrohub/wishlist") ||
+                request.getRequestURI().startsWith("/electrohub/cart") ||
+                request.getRequestURI().startsWith("/electrohub/admin")) {
 
             response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
             response.setHeader("Pragma", "no-cache");

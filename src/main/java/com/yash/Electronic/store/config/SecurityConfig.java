@@ -38,29 +38,30 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> {
                     authorize
                             .requestMatchers("/img/**", "/css/**", "/js/**", "/webjars/**").permitAll()
-                            .requestMatchers("/ElectroHub/login", "/ElectroHub/register", "/ElectroHub/products", "/ElectroHub/deals", "/ElectroHub/user/do-register", "/ElectroHub/").permitAll()
-                            .requestMatchers("/ElectroHub/cart/add").authenticated()  // ✅ Allow only logged-in users
+                            .requestMatchers("/electrohub/login", "/electrohub/register", "/electrohub/products", "/electrohub/deals", "/electrohub/user/do-register", "/electrohub/", "electrohub/categories/**").permitAll()
+                            .requestMatchers("/electrohub/cart/add").authenticated()
+                            .requestMatchers("electrohub/admin").hasRole("ADMIN")
                             .anyRequest().authenticated();
                 })
                 .formLogin(formLogin -> {
                     formLogin
-                            .loginPage("/ElectroHub/login")
+                            .loginPage("/electrohub/login")
                             .loginProcessingUrl("/authenticate")
-                            .defaultSuccessUrl("/ElectroHub/", true)
-                            .failureUrl("/ElectroHub/login?error=true")
+                            .defaultSuccessUrl("/electrohub/", true)
+                            .failureUrl("/electrohub/login?error=true")
                             .usernameParameter("email")
                             .passwordParameter("password");
                 })
                 .logout(logoutForm -> {
                     logoutForm
                             .logoutUrl("/do-logout")
-                            .logoutSuccessUrl("/ElectroHub/login?logout=true")
+                            .logoutSuccessUrl("/electrohub/login?logout=true")
                             .invalidateHttpSession(true)
                             .clearAuthentication(true)
                             .deleteCookies("JSESSIONID");
                 })
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/ElectroHub/login")
+                        .loginPage("/electrohub/login")
                         .successHandler(handler)
                 )
                 .csrf(csrf -> csrf

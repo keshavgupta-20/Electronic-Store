@@ -71,7 +71,7 @@ public class OAuthAuthenticationSuccessHandler implements AuthenticationSuccessH
         User loggedInUser = userRepo.findByEmail(email).orElse(null);
         if (loggedInUser == null) {
             // handle appropriately
-            response.sendRedirect("/ElectroHub/login?error=notfound");
+            response.sendRedirect("/electrohub/login?error=notfound");
             return;
         }
         // fetch full user with roles
@@ -81,10 +81,10 @@ public class OAuthAuthenticationSuccessHandler implements AuthenticationSuccessH
 
         if (isAdmin) {
             System.out.println("Admin");
-            redirectStrategy.sendRedirect(request, response, "ElectroHub/admin/dashboard");
+            redirectStrategy.sendRedirect(request, response, "electrohub/admin/dashboard");
         } else {
             System.out.println("Not Admin");
-            redirectStrategy.sendRedirect(request, response, "/ElectroHub/");
+            redirectStrategy.sendRedirect(request, response, "/electrohub/");
         }
     }
 }

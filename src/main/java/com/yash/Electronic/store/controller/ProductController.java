@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 
 @Controller
-@RequestMapping("/ElectroHub/admin/product")
+@RequestMapping("/electrohub/admin/product")
 public class ProductController {
     @Autowired
     private ProdcutService prodcutService;
@@ -59,13 +59,13 @@ public class ProductController {
         if (coverImage.isEmpty() || !coverImage.getContentType().startsWith("image/")) {
             logger.info("Image is not update");
             model.addAttribute("imageError", "Please upload a valid image.");
-            return "/ElectroHub/admin/category/";
+            return "/electrohub/admin/category/";
         }
 
         String imageName = fileService.uploadFile(coverImage, imageUploadPath);
         product.setProductImage(imageName);
         ProductDto created = prodcutService.create(product);
-        return "redirect:/ElectroHub/admin/product/show" ;
+        return "redirect:/electrohub/admin/product/show" ;
     }
     @PostMapping("/update")
     public String updateProduct(@ModelAttribute("product") @Valid ProductDto product,
@@ -96,13 +96,13 @@ public class ProductController {
         }
 
         ProductDto productDto = prodcutService.update(product, product.getProductId());
-        return "redirect:/ElectroHub/admin/product/show";
+        return "redirect:/electrohub/admin/product/show";
     }
 
     @GetMapping("/delete/{productId}")
     public String delete(@PathVariable String productId) throws IOException {
         prodcutService.delete(productId);
-        return "redirect:/ElectroHub/admin/product/show" ;
+        return "redirect:/electrohub/admin/product/show" ;
     }
 
     @GetMapping("/{productId}")
@@ -135,16 +135,7 @@ public class ProductController {
 //        PageableResponse<ProductDto> pageableResponse = prodcutService.findByLiveTrue(pageNumber, pageSize, sortBy, sortDir);
 //        return new ResponseEntity<>(pageableResponse, HttpStatus.OK);
 //    }
-    @GetMapping("/search/{query}")
-    public  ResponseEntity<PageableResponse<ProductDto>> SearchUSer(
-            @PathVariable String query,
-            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
-                                                                     @RequestParam(value = "pageSize", defaultValue = "4", required = false)int pageSize,
-                                                                     @RequestParam(value = "sortBy", defaultValue = "title", required = false)String sortBy,
-                                                                     @RequestParam(value = "sortDir", defaultValue = "Asc", required = false)String sortDir) {
-        PageableResponse<ProductDto> pageableResponse = prodcutService.searchByTitle(query, pageNumber, pageSize, sortBy, sortDir);
-        return new ResponseEntity<>(pageableResponse, HttpStatus.OK);
-    }
+
 
     @GetMapping("/add-product")
     public  String showUserForm(Model model){

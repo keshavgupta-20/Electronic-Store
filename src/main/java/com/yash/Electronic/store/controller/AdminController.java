@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/ElectroHub/admin")
+@RequestMapping("/electrohub/admin")
 public class AdminController {
     @Autowired
     private CategoryService categoryService;

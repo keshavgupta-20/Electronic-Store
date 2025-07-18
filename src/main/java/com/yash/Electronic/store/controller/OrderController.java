@@ -25,7 +25,7 @@ import java.util.Random;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/ElectroHub/orders")
+@RequestMapping("/electrohub/orders")
 public class OrderController {
 
     @Autowired
@@ -101,7 +101,7 @@ public class OrderController {
             List<ContactDetailDto> contactDetailDtoList = orderService.addressDetailByUser(userId);
             model.addAttribute("addresses", contactDetailDtoList);
 
-            return "redirect:/ElectroHub/cart/"+ contactDetailDto.getUserId();
+            return "redirect:/electrohub/cart/"+ contactDetailDto.getUserId();
         } catch (Exception e) {
             model.addAttribute("address", contactDetailDto);
             model.addAttribute("errorMessage", "Something went wrong while saving address.");
@@ -179,7 +179,7 @@ public class OrderController {
         createOrderRequest.setOrderAmount(totalPrice);
         orderService.createOrder(createOrderRequest);
 
-        return "redirect:/ElectroHub/orders/success";
+        return "redirect:/electrohub/orders/success";
     }
 
     @GetMapping("/success")

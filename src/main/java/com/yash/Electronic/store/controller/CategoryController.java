@@ -31,7 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Controller
-@RequestMapping("/ElectroHub/admin/category")
+@RequestMapping("/electrohub/admin/category")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
@@ -50,17 +50,17 @@ public class CategoryController {
     public String createCategory(@Valid @ModelAttribute("category") CategoryDto category,
                                  BindingResult result, @RequestParam("coverPage") MultipartFile coverImages, Model model) throws IOException {
 
-        // Validate image (you can replace this with your @ImageValidator logic)
+
         if (coverImages.isEmpty() || !coverImages.getContentType().startsWith("image/")) {
             logger.info("Image is not update");
             model.addAttribute("imageError", "Please upload a valid image.");
-            return "/ElectroHub/admin/category/";
+            return "/electrohub/admin/category/";
         }
         String imageName = fileService.uploadFile(coverImages, imageUploadPath);
 
         category.setCoverPage(imageName);
         CategoryDto categoryDto =  categoryService.create(category);
-        return "redirect:/ElectroHub/admin/category/show";
+        return "redirect:/electrohub/admin/category/show";
     }
     //update
     @PostMapping("/update")
@@ -88,7 +88,7 @@ public class CategoryController {
         }
 
         CategoryDto categoryDto1 = categoryService.update(category, category.getCategoryId());
-        return "redirect:/ElectroHub/admin/category/show";
+        return "redirect:/electrohub/admin/category/show";
     }
 
     //delete
@@ -96,17 +96,9 @@ public class CategoryController {
     public String deleteUser(@PathVariable("categoryId") String categoryId){
         categoryService.delete(categoryId);
         ApiResponseClass apiResponseClass = ApiResponseClass.builder().message("Deleted SuccessFul").status(HttpStatus.OK).success(true).build();
-        return "redirect:/ElectroHub/admin/category/show";
+        return "redirect:/electrohub/admin/category/show";
 
     }
-
-    //getsingle
-    @GetMapping("/{categoryId}")
-    public ResponseEntity<CategoryDto> CategorybyId(@PathVariable("categoryId") String  categoryId){
-        CategoryDto categoryDto = categoryService.getSingle(categoryId);
-        return new ResponseEntity<>(categoryDto, HttpStatus.OK);
-    }
-
 
     //getall
     @GetMapping("/show")
@@ -128,45 +120,6 @@ public class CategoryController {
        return "category";
 
     }
-    @PostMapping("/image/{categoryId}")
-    public ResponseEntity<ImageResponse> uploadUserFile(@Valid @RequestParam("categoryImage")MultipartFile image, @PathVariable String categoryId) throws IOException {
-        String imageName = fileService.uploadFile(image, imageUploadPath);
-        CategoryDto categoryDto = categoryService.getSingle(categoryId);
-        categoryDto.setCoverPage(imageName);
-        CategoryDto categoryDto1 = categoryService.update(categoryDto, categoryId);
-        ImageResponse imageResponse = ImageResponse.builder().message("Image is inserted successfully").imageName(imageName).success(true).httpStatus(HttpStatus.CREATED).build();
-        return new ResponseEntity<>(imageResponse, HttpStatus.CREATED);
-    }
-
-    public  void servedUserImage( String categoryId, HttpServletResponse response)throws IOException{
-        CategoryDto categoryDto = categoryService.getSingle(categoryId);
-        logger.info(categoryDto.getCoverPage());
-        InputStream inputStream = fileService.getResource(imageUploadPath, categoryDto.getCoverPage());
-        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-        StreamUtils.copy(inputStream, response.getOutputStream());
-
-    }
-    //create productwithCategory
-    @PostMapping("/{categoryId}/products")
-    public ResponseEntity<ProductDto>createProductWithCategroy(
-            @PathVariable("categoryId") String categoryId, @RequestBody ProductDto productDto
-    ){
-     ProductDto productDto1 =    prodcutService.createwithCategory(productDto, categoryId);
-        return new ResponseEntity<>(productDto1, HttpStatus.OK);
-    }
-
-    @PutMapping("/{categoryId}/products/{productId}")
-    public  ResponseEntity<ProductDto> updateCategoryofProduct(
-            @PathVariable("categoryId") String categoryId, @PathVariable("productId") String productId
-
-            ){
-        ProductDto productDto1 = prodcutService.updateCategory(productId, categoryId);
-        return  new ResponseEntity<>(productDto1, HttpStatus.OK);
-
-    }
-
-
-
     @GetMapping("/edit/{categoryId}")
     public String showEditForm(@PathVariable String categoryId, Model model){
         CategoryDto categoryDto = categoryService.getSingle(categoryId);

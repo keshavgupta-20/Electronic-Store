@@ -27,7 +27,7 @@
   <div class="form-wrapper">
     <h2>Edit Category</h2>
 
-    <form th:action="@{/ElectroHub/admin/category/update}" th:object="${category}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/electrohub/admin/category/update}" th:object="${category}" method="post" enctype="multipart/form-data">
       <!-- Category ID (readonly) -->
       <div class="mb-3">
         <label>Category ID</label>
@@ -63,7 +63,7 @@
       </div>
 
       <button type="submit" class="btn btn-success">Update</button>
-      <a th:href="@{/ElectroHub/admin/category/show}" class="btn btn-secondary ms-2">Cancel</a>
+      <a th:href="@{/electrohub/admin/category/show}" class="btn btn-secondary ms-2">Cancel</a>
     </form>
   </div>
 </section>

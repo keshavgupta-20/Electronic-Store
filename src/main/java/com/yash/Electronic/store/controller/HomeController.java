@@ -20,12 +20,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/ElectroHub")
+@RequestMapping("/electrohub")
 public class HomeController {
 
     @Autowired
@@ -51,13 +52,43 @@ public class HomeController {
     @Autowired
     private OrderService orderService;
 
+    @GetMapping("/search")
+    public String SearchProduct(
+            @RequestParam("q") String query,
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "4", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "title", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "Asc", required = false) String sortDir,
+            Model model,
+            Authentication authentication,
+            HttpSession session
+    ) {
+        PageableResponse<ProductDto> pageableResponse = prodcutService.searchByTitle(query, pageNumber, pageSize, sortBy, sortDir);
+
+        model.addAttribute("products", pageableResponse.getContent());
+        model.addAttribute("pageNumber", pageableResponse.getPageNumber()); // FIXED: Removed duplicate line
+        model.addAttribute("totalPages", pageableResponse.getTotalPages());
+        model.addAttribute("pageSize", pageableResponse.getPageSize());
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("isLastPage", pageableResponse.isLastPage());
+
+        if (authentication != null) {
+            String email = LoginHelper.getEmailOfLoggedInUser(authentication);
+            if (email != null && !email.isEmpty()) {
+                UserDto userDto = userServices.getUserbyEmail(email);
+                session.setAttribute("user", userDto);
+            }
+        }
+        return "product";
+    }
 
 
     @RequestMapping("/")
     public String LandingPage(Authentication authentication, HttpSession session, Model model, HttpServletRequest request){
 
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
-        System.out.println(csrfToken);
+//        System.out.println(csrfToken);
         model.addAttribute("_csrf", csrfToken);
 
         List<CategoryDto> list = categoryService.getAllCategory();
@@ -71,8 +102,6 @@ public class HomeController {
             String email = LoginHelper.getEmailOfLoggedInUser(authentication);
             if (email != null && !email.isEmpty()) {
                 UserDto user = userServices.getUserbyEmail(email);
-
-
                 boolean isAdmin = authentication.
                         getAuthorities().
                         stream().
@@ -81,7 +110,7 @@ public class HomeController {
                 session.setAttribute("isAdmin", isAdmin);
                 if (isAdmin) {
 
-                    return "redirect:/ElectroHub/admin/dashboard";
+                    return "redirect:/electrohub/admin/dashboard";
                 }
 
             }
@@ -97,9 +126,10 @@ public class HomeController {
 
     @GetMapping("/products")
     public  String getalls(@RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
-                          @RequestParam(value = "pageSize", defaultValue = "10", required = false)int pageSize,
-                          @RequestParam(value = "sortBy", defaultValue = "title", required = false)String sortBy,
-                          @RequestParam(value = "sortDir", defaultValue = "Asc", required = false)String sortDir, Model model){
+                           @RequestParam(value = "pageSize", defaultValue = "10", required = false)int pageSize,
+                           @RequestParam(value = "sortBy", defaultValue = "title", required = false)String sortBy,
+                           @RequestParam(value = "sortDir", defaultValue = "Asc", required = false)String sortDir, Model model,
+                           Authentication authentication, HttpSession session,  HttpServletRequest request){
         PageableResponse<ProductDto> pageableResponse = prodcutService.getAll(pageNumber, pageSize, sortBy, sortDir);
         model.addAttribute("products",pageableResponse.getContent());
         model.addAttribute("pageNumber");
@@ -109,6 +139,16 @@ public class HomeController {
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("isLastPage", pageableResponse.isLastPage());
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+          System.out.println(csrfToken);
+        model.addAttribute("_csrf", csrfToken);
+        if (authentication != null){
+            String email = LoginHelper.getEmailOfLoggedInUser(authentication);
+            if (email != null  && !email.isEmpty()){
+                UserDto userDto = userServices.getUserbyEmail(email);
+                session.setAttribute("user", userDto);
+            }
+        }
         return "product";
     }
 
@@ -151,6 +191,7 @@ public class HomeController {
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("isLastPage", pageableResponse.isLastPage());
+
         return "product";
     }
 
@@ -172,6 +213,7 @@ public class HomeController {
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("isLastPage", pageableResponse.isLastPage());
+
         return "product";
 
     }
@@ -180,6 +222,8 @@ public class HomeController {
     public String allCategory(Model model){
         List<CategoryDto> list = categoryService.getAllCategory();
         model.addAttribute("categories", list);
+        List<ProductDto> productDtos = prodcutService.findByLiveTrue();
+        model.addAttribute("products", productDtos);
 
 
         return "user-category";
@@ -216,12 +260,12 @@ public class HomeController {
     @RequestMapping("/cart/{userId}/items/{itemId}")
     public String removeItemToCart(@PathVariable String userId, @PathVariable int itemId){
         cartService.removeItemFromCart(userId, itemId);
-        return "redirect:/ElectroHub/cart/" + userId;
+        return "redirect:/electrohub/cart/" + userId;
     }
 
     @RequestMapping("/cart/{userId}/clear")
     public String clearCart(@PathVariable String userId){
         cartService.clearCart(userId);
-        return "redirect:/ElectroHub/cart/" + userId;
+        return "redirect:/electrohub/cart/" + userId;
     }
 }

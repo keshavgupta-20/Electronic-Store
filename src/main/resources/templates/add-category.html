@@ -18,7 +18,7 @@
 <section class="form-wrapper mx-auto">
     <h2>Add New Category</h2>
 
-    <form th:action="@{/ElectroHub/admin/category/add/save}" th:object="${category}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/electrohub/admin/category/add/save}" th:object="${category}" method="post" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
             <input type="text" th:field="*{title}" class="form-control" id="title" placeholder="Enter category title">

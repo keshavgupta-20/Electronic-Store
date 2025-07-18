@@ -28,7 +28,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @Controller
-@RequestMapping("/ElectroHub/user")
+@RequestMapping("/electrohub/user")
 public class UserController {
     @Autowired
     private UserServices userServices;
@@ -61,35 +61,10 @@ public class UserController {
             return "register";
         }
         userServices.create_User(userDto);
-        return "redirect:/ElectroHub/";
+        return "redirect:/electrohub/";
     }
 
-    //update
-    @PutMapping("/{userId}")
-    public  ResponseEntity<UserDto> updateUser(@Valid @PathVariable("userId") String userId, @RequestBody UserDto userDto){
-        UserDto userDto1 = userServices.updateUser(userDto, userId);
-        return new ResponseEntity<>(userDto1, HttpStatus.OK);
 
-    }
-    //delete
-    @DeleteMapping("/{userId}")
-    public  ResponseEntity<String> deleteUser(@PathVariable("userId") String userId) throws IOException {
-          userServices.deleteUser(userId);
-         return new ResponseEntity<>("Deleted Sucessfully", HttpStatus.OK);
-    }
-    //getuserbyid
-    @GetMapping("/{userId}")
-    public  ResponseEntity<UserDto> UserById(@PathVariable("userId") String userId){
-        UserDto userDto = userServices.getUser(userId);
-//        ApiResposeClass message = ApiResposeClass.builder().message("Succesffuly deleted").success(true).status(HttpStatus.OK).build();
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
-    }
-    //getuserbyemail
-    @GetMapping("/emailId/{email}")
-    public  ResponseEntity<UserDto> UserByEmailId(@PathVariable("email") String email){
-        UserDto userDto = userServices.getUserbyEmail(email);
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
-    }
     //getalluser
     @GetMapping
     public ResponseEntity<PageableResponse<UserDto>> Alluser(@RequestParam(value = "pageNumber", defaultValue =  "1", required = false)int pageNumber,
@@ -101,11 +76,7 @@ public class UserController {
         PageableResponse<UserDto> userDtos = userServices.getallUser(pageNumber-1, PageSize,sortBy,sortDir);
         return new ResponseEntity<>(userDtos, HttpStatus.OK);
     }
-    //get user by keyword
-    @GetMapping("/search/{keywords}")
-    public ResponseEntity<List<UserDto>> searchUser(@PathVariable String keywords){
-        return new ResponseEntity<>(userServices.searchUser(keywords), HttpStatus.OK);
-    }
+
     //upload user image
     @PostMapping("/image/{userId}")
     public ResponseEntity<ImageResponse> uploadUserFile(
