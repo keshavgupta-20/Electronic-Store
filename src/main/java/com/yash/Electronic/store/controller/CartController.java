@@ -24,6 +24,7 @@ public class CartController {
         System.out.println(request.getUserId());
         System.out.println(request.getProductId());
         System.out.println(request.getQuantity());
+        System.out.println("hey");
         try {
             CartDto cartDto = cartService.addItemToCart(
                     request.getUserId(),
@@ -44,6 +45,8 @@ public class CartController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("status", "error", "message", "Server error"));
         }
+
     }
+
 
 }
