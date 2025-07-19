@@ -131,6 +131,7 @@ public class HomeController {
                            @RequestParam(value = "sortDir", defaultValue = "Asc", required = false)String sortDir, Model model,
                            Authentication authentication, HttpSession session,  HttpServletRequest request){
         PageableResponse<ProductDto> pageableResponse = prodcutService.getAll(pageNumber, pageSize, sortBy, sortDir);
+
         model.addAttribute("products",pageableResponse.getContent());
         model.addAttribute("pageNumber");
         model.addAttribute("pageNumber", pageableResponse.getPageNumber());
@@ -142,6 +143,7 @@ public class HomeController {
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
           System.out.println(csrfToken);
         model.addAttribute("_csrf", csrfToken);
+
         if (authentication != null){
             String email = LoginHelper.getEmailOfLoggedInUser(authentication);
             if (email != null  && !email.isEmpty()){
@@ -240,6 +242,9 @@ public class HomeController {
     public String getCart(@PathVariable String userId, Model model){
         CartDto cartDto = cartService.getCartByUser(userId);
         List<CartItemDto> item = cartDto.getItems();
+        System.out.println(item.get(0).getDiscountedPrice());
+        System.out.println(item.get(0).getPrice());
+        System.out.println(item.get(0).getTotalPrice());
 
         int finalTotalPrice = item.stream()
                 .mapToInt(CartItemDto::getTotalPrice)

@@ -49,19 +49,26 @@
                         </div>
 
                         <!-- Add to Cart Button -->
+                        <!-- Stock Check and Add to Cart -->
                         <div class="mt-auto pt-3">
-                            <div class="input-group mb-3">
-                                <button class="btn btn-outline-secondary" type="button" onclick="decrementQuantity(this)">-</button>
-                                <input type="number" class="form-control text-center quantity-input"
-                                       value="1" min="1" th:attr="data-product-id=${product.productId}">
-                                <button class="btn btn-outline-secondary" type="button" onclick="incrementQuantity(this)">+</button>
+                            <div th:if="${product.quantity >= 1}">
+                                <div class="input-group mb-3">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="decrementQuantity(this)">-</button>
+                                    <input type="number" class="form-control text-center quantity-input"
+                                           value="1" min="1" th:attr="data-product-id=${product.productId}">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="incrementQuantity(this)">+</button>
+                                </div>
+                                <button class="btn btn-primary w-100 add-to-cart-btn"
+                                        th:attr="data-product-id=${product.productId}"
+                                        onclick="addToCart(this)">
+                                    Add to Cart
+                                </button>
                             </div>
-                            <button class="btn btn-primary w-100 add-to-cart-btn"
-                                    th:attr="data-product-id=${product.productId}"
-                                    onclick="addToCart(this)">
-                                Add to Cart
-                            </button>
+                            <div th:if="${product.quantity < 1}">
+                                <span class="badge bg-danger w-100 py-2 fs-6">Out of Stock</span>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>

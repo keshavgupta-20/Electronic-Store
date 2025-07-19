@@ -67,7 +67,7 @@ public class CartServiceImpl implements CartService {
 
                 int updatedQty = item.getQuantity() + quantity;
                 item.setQuantity(updatedQty);
-                item.setTotalPrice(updatedQty * product.getPrice());
+                item.setTotalPrice(updatedQty * product.getDiscountedPrice());
                 found = true;
                 break;
             }
@@ -77,7 +77,7 @@ public class CartServiceImpl implements CartService {
             CartItem newItem = CartItem.builder()
                     .product(product)
                     .quantity(quantity)
-                    .totalPrice(quantity * product.getPrice())
+                    .totalPrice(quantity * product.getDiscountedPrice())
                     .cart(cart)
                     .build();
             cart.getItems().add(newItem);
@@ -112,25 +112,37 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDto getCartByUser(String userId) {
+        // Fetch user
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
 
+        // Fetch cart for user
         Cart cart = cartRepo.findByUser(user)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart does not exist"));
 
-        // Manually map cart to CartDto (except items)
+        // Create CartDto
         CartDto cartDto = new CartDto();
         cartDto.setCartId(cart.getCartId());
         cartDto.setCreatedAt(cart.getCreatedAt());
 
+        // Convert each CartItem to CartItemDto manually
         List<CartItemDto> cartItemDtos = cart.getItems().stream().map(cartItem -> {
-            CartItemDto dto = modelMapper.map(cartItem, CartItemDto.class);
+            CartItemDto dto = new CartItemDto();
 
-
-            if (cartItem.getProduct() != null) {
-                dto.setProductName(cartItem.getProduct().getTitle());
-                dto.setProductImage(cartItem.getProduct().getProductImage());
+            Product product = cartItem.getProduct();
+            if (product != null) {
+                dto.setProductId(product.getProductId());
+                dto.setProductName(product.getTitle());
+                dto.setProductImage(product.getProductImage());
+                dto.setPrice(product.getPrice());
+                dto.setDiscountedPrice(product.getDiscountedPrice());
             }
+
+            dto.setCartItemId(cartItem.getCartItemId());
+            dto.setQuantity(cartItem.getQuantity());
+
+            // Calculate total price using discounted price
+            dto.setTotalPrice(dto.getDiscountedPrice() * dto.getQuantity());
 
             return dto;
         }).collect(Collectors.toList());
@@ -138,5 +150,6 @@ public class CartServiceImpl implements CartService {
         cartDto.setItems(cartItemDtos);
         return cartDto;
     }
+
 
 }

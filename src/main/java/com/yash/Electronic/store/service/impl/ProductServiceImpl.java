@@ -95,6 +95,7 @@ public class ProductServiceImpl implements ProdcutService {
         Pageable pageable = PageRequest.of(0, 30);
         List<Product> products = productRepo.findByLiveTrue(pageable).getContent();
 
+
         return products.stream()
                 .map(product -> modelMapper.map(product, ProductDto.class))
                 .collect(Collectors.toList());

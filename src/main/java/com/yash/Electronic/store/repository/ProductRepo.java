@@ -12,6 +12,7 @@ import java.util.List;
 
 @Repository
 public interface ProductRepo  extends JpaRepository<Product, String> {
+    @Query("SELECT p FROM Product p WHERE p.live = true AND p.quantity > 0")
     Page<Product> findBytitleContaining(String title, Pageable pageable);
 
 
