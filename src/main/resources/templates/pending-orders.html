@@ -94,13 +94,33 @@
       <td th:text="${#dates.format(order.orderedDate, 'dd-MM-yyyy HH:mm')}">01-07-2025 15:30</td>
       <td th:text="${order.deliveredDate != null ? #dates.format(order.deliveredDate, 'dd-MM-yyyy HH:mm') : 'Not Delivered'}">Not Delivered</td>
       <td class="action-btns">
-        <a th:href="@{'/orders/view/' + ${order.orderId}}" class="btn btn-info btn-sm">
+        <a th:href="@{'/electrohub/admin/view/' + ${order.orderId}}" class="btn btn-info btn-sm">
           <i class="fas fa-eye"></i> View Detail
         </a>
       </td>
     </tr>
     </tbody>
   </table>
+  <nav th:if="${totalPages > 1}" class="mt-4">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" th:classappend="${pageNumber == 0} ? 'disabled'">
+        <a class="page-link"
+           th:href="@{'/electrohub/admin/orders'(pageNumber=${pageNumber - 1}, pageSize=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir})}">Previous</a>
+      </li>
+
+      <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+          th:classappend="${i == pageNumber} ? 'active'">
+        <a class="page-link"
+           th:href="@{'/electrohub/admin/orders'(pageNumber=${i}, pageSize=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir})}"
+           th:text="${i + 1}">1</a>
+      </li>
+
+      <li class="page-item" th:classappend="${pageNumber + 1 == totalPages} ? 'disabled'">
+        <a class="page-link"
+           th:href="@{'/electrohub/admin/orders'(pageNumber=${pageNumber + 1}, pageSize=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir})}">Next</a>
+      </li>
+    </ul>
+  </nav>
 </section>
 
 </body>

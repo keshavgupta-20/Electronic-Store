@@ -98,6 +98,8 @@ public class UserServiceiimp implements UserServices {
        catch (Exception ex){
            ex.printStackTrace();
        }
+        user.getRoles().clear();
+        userRepo.save(user);
         userRepo.delete(user);
     }
 
@@ -152,5 +154,25 @@ public class UserServiceiimp implements UserServices {
 //                .email(savedUser.getEmail())
 //                .imageName(savedUser.getImageName()).build();
         return mapper.map(savedUser, UserDto.class);
+    }
+
+    public List<UserDto> getAllAdmin() {
+        List<User> userList = userRepo.findAllAdmins();
+
+        // Correct mapping
+        List<UserDto> userDtos = userList.stream()
+                .map(user -> mapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
+
+        return userDtos;
+    }
+
+    public void  createAdmin(UserDto userDto){
+        User user = mapper.map(userDto, User.class);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        Role normalRole = roleRepo.findByName("ROLE_ADMIN")
+                .orElseThrow(() -> new ResourceNotFoundException("ROLE_USER not found"));
+        user.setRoles(List.of(normalRole));
+        User savedUser = userRepo.save(user);
     }
 }

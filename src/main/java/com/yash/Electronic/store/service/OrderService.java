@@ -22,9 +22,12 @@ public interface OrderService {
     //order method(logic)related to user
     PageableResponse<OrderDto> getUser(int pageNumber, int pageSize, String sortBy, String sortDir);
     OrderDto updateOrderByAdmin(String orderId, AdminUpdateOrder request);
-    OrderDto updateOrderByUser(String orderId, UserUpdateOrder request);
+
     void addAddressDetail(ContactDetailDto contactDetailDto);
     List<ContactDetailDto> addressDetailByUser(String userId);
     ContactDetailDto contactDetailById(String contactDetailId);
+    OrderDto OrderByUser(String orderId);
+    List<OrderItemDto> orderByOrderItem(String orderId);
+    void updateOrderStatus(String orderId, String newStatus);
 
 }

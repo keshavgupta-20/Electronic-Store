@@ -8,6 +8,7 @@ import com.yash.Electronic.store.service.OrderService;
 
 
 import com.yash.Electronic.store.dtos.*;
+import com.yash.Electronic.store.service.UserServices;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
@@ -33,6 +34,9 @@ public class OrderController {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private UserServices userServices;
     //create
 
 
@@ -49,22 +53,11 @@ public class OrderController {
     //getOrderOfUser
 
     //
-    @GetMapping
-    public ResponseEntity<PageableResponse<OrderDto>>  getOrders(
-                                                                 @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
-                                                                 @RequestParam(value = "pageSize", defaultValue = "4", required = false)int pageSize,
-                                                                 @RequestParam(value = "sortBy", defaultValue = "orderedDate", required = false)String sortBy,
-                                                                 @RequestParam(value = "sortDir", defaultValue = "desc", required = false)String sortDir){
-        PageableResponse<OrderDto> orderDtos = orderService.getUser(pageNumber, pageSize, sortBy,  sortDir);
-        return new ResponseEntity<>(orderDtos, HttpStatus.OK);
-    }
 
 
 
-    @PutMapping("/user/{orderId}")
-    public ResponseEntity<OrderDto> updateOrderByUser(@PathVariable String orderId, @RequestBody UserUpdateOrder request) {
-        return ResponseEntity.ok(orderService.updateOrderByUser(orderId, request));
-    }
+
+
 
     @GetMapping("/address/add/{userId}")
     public String orderAddress(Model model, @PathVariable String userId){
@@ -167,6 +160,7 @@ public class OrderController {
                              @RequestParam String paymentMethod,
                              @RequestParam int totalPrice
                              ) {
+        UserDto userDto = userServices.getUser(userId);
         ContactDetailDto contactDetailDto = orderService.contactDetailById(addressId);
         CreateOrderRequest createOrderRequest = new CreateOrderRequest();
         createOrderRequest.setUserId(userId);
@@ -174,7 +168,9 @@ public class OrderController {
         createOrderRequest.setCartId(cartId);
         String userAddresss = contactDetailDto.getHouseNo() + "," + contactDetailDto.getStreet() +
                 "," + contactDetailDto.getCity() +  "," + contactDetailDto.getCountry() + "," + contactDetailDto.getPincode();
-        createOrderRequest.setBillingPhone(userAddresss);
+        createOrderRequest.setBillingAddress(userAddresss);
+        createOrderRequest.setBillingPhone(contactDetailDto.getContactNo());
+        createOrderRequest.setBillingName(userDto.getName());
         createOrderRequest.setPaymentStatus(paymentMethod);
         createOrderRequest.setOrderAmount(totalPrice);
         orderService.createOrder(createOrderRequest);
@@ -186,6 +182,9 @@ public class OrderController {
     public String  sucecss(){
         return "success";
     }
+
+
+
 
 
 

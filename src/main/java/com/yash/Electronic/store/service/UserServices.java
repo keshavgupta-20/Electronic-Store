@@ -27,6 +27,8 @@ public interface UserServices {
 
     //search user
     List<UserDto> searchUser(String keyword);
+    List<UserDto> getAllAdmin();
+    void  createAdmin(UserDto userDto);
 
     // other user specific feature
 

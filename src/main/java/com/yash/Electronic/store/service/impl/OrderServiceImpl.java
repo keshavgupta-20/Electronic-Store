@@ -154,17 +154,7 @@ public  class OrderServiceImpl implements OrderService {
         return mapper.map(updatedOrder, OrderDto.class);
     }
     @Override
-    public OrderDto updateOrderByUser(String orderId, UserUpdateOrder request) {
-        Order order = orderServiceRepo.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found !!"));
 
-        order.setBillingName(request.getBillingName());
-        order.setBillingPhone(request.getBillingPhone());
-        order.setBillingAddress(request.getBillingAddress());
-
-        Order updatedOrder = orderServiceRepo.save(order);
-        return mapper.map(updatedOrder, OrderDto.class);
-    }
     public void addAddressDetail(ContactDetailDto contactDetailDto){
         ContactDetail contactDetail= mapper.map(contactDetailDto, ContactDetail.class);
         contactDetailRepo.save(contactDetail);
@@ -188,6 +178,42 @@ public  class OrderServiceImpl implements OrderService {
             return null; // or throw an exception depending on your use case
         }
     }
+
+    public OrderDto OrderByUser(String orderId) {
+        return mapper.map(
+                orderServiceRepo.findById(orderId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Order ID does not exist")),
+                OrderDto.class
+        );
+    }
+    public List<OrderItemDto> orderByOrderItem(String orderId){
+        List<OrderItem> orderItem = orderItemRepo.findByOrderOrderId(orderId);
+        List<OrderItemDto> orderItemDtos = orderItem.stream().map(orderItem1 -> mapper.map(orderItem1, OrderItemDto.class)).collect(Collectors.toList());
+        return orderItemDtos;
+    }
+
+    @Override
+    public void updateOrderStatus(String orderId, String newStatus) {
+        // Fetch the order from DB
+        Order order = orderServiceRepo.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + orderId));
+
+        // Update status
+        order.setOrderStatus(newStatus);
+
+        // Set delivered date if applicable
+        if ("DELIVERED".equalsIgnoreCase(newStatus)) {
+            order.setDeliveredDate(new Date());
+        } else {
+            order.setDeliveredDate(null); // Clear if not delivered
+        }
+
+        // Save back to DB
+        orderServiceRepo.save(order);
+    }
+
+
+
 
 
 

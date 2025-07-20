@@ -1,0 +1,124 @@
+/* Order Details Page Styling */
+body {
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main content area - fixes sidebar overlap */
+.main-content {
+    display: flex;
+    flex: 1;
+    margin-top: 56px; /* Adjust based on navbar height */
+}
+
+/* Main content wrapper */
+.form-wrapper {
+    flex: 1;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    margin-left: 270px; /* Sidebar width + spacing */
+    transition: margin 0.3s ease;
+}
+
+/* Heading Styles */
+h2 {
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: #343a40;
+}
+
+h4 {
+    font-weight: 500;
+    margin-top: 30px;
+    color: #495057;
+}
+
+/* Table Styling */
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: white;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    font-weight: 500;
+}
+
+.table th,
+.table td {
+    vertical-align: middle;
+    text-align: center;
+    padding: 12px 15px;
+}
+
+/* Button styling */
+.btn {
+    padding: 8px 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn i {
+    margin-right: 5px;
+}
+
+/* Form elements */
+select.form-select {
+    max-width: 300px;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+}
+
+/* Order details information */
+.order-info div {
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.order-info strong {
+    color: #495057;
+    min-width: 150px;
+    display: inline-block;
+}
+
+/* Mobile Responsive */
+@media (max-width: 992px) {
+    .form-wrapper {
+        margin-left: 20px;
+        width: calc(100% - 40px);
+    }
+}
+
+@media (max-width: 768px) {
+    .form-wrapper {
+        margin: 15px;
+        padding: 20px;
+        width: calc(100% - 30px);
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    select.form-select {
+        width: 100%;
+        max-width: none;
+    }
+
+    .order-info div {
+        font-size: 14px;
+    }
+
+    .order-info strong {
+        min-width: 120px;
+    }
+}
