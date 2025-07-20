@@ -37,10 +37,11 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(authorize -> {
                     authorize
+                            .requestMatchers("/electrohub/admin").hasRole("ADMIN")
                             .requestMatchers("/img/**", "/css/**", "/js/**", "/webjars/**").permitAll()
-                            .requestMatchers("/electrohub/login", "/electrohub/register", "/electrohub/products", "/electrohub/deals", "/electrohub/user/do-register", "/electrohub/", "electrohub/categories/**").permitAll()
-                            .requestMatchers("/electrohub/cart/add").authenticated()
-                            .requestMatchers("electrohub/admin").hasRole("ADMIN")
+                            .requestMatchers("/electrohub/login", "/electrohub/register", "/electrohub/products", "/electrohub/deals",
+                                    "/electrohub/user/do-register", "/electrohub/", "/electrohub/categories/**", "/electrohub/{categoryId}/products").permitAll()
+                            .requestMatchers("/electrohub/cart/").authenticated()
                             .anyRequest().authenticated();
                 })
                 .formLogin(formLogin -> {
