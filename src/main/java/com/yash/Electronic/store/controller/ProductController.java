@@ -54,7 +54,7 @@ public class ProductController {
                                 @RequestParam("productImage") MultipartFile coverImage, Model model) throws IOException {
 
         if (result.hasErrors() && product.getProductImage() != null){
-            return "add-product";
+            return "admin/add-product";
         }
         if (coverImage.isEmpty() || !coverImage.getContentType().startsWith("image/")) {
             logger.info("Image is not update");
@@ -76,7 +76,7 @@ public class ProductController {
 
         if (result.hasErrors()) {
             model.addAttribute("product", product);
-            return "edit-product"; // return back to form if errors
+            return "edit-product";
         }
 
         if (!file.isEmpty()) {
@@ -124,7 +124,7 @@ public class ProductController {
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("isLastPage", pageableResponse.isLastPage());
-        return "admin-product";
+        return "admin/admin-product";
     }
 
 //    @GetMapping("/live")
@@ -148,7 +148,7 @@ public class ProductController {
         model.addAttribute("product", product);
         model.addAttribute("categories", categoryDtos); // name matches the form
 
-        return "add-product";
+        return "admin/add-product";
     }
 
     @GetMapping("/edit/{productId}")
@@ -159,7 +159,7 @@ public class ProductController {
         List<CategoryDto> categoryDto = categoryList.stream().map(cat-> modelMapper.map(cat, CategoryDto.class)).collect(Collectors.toList());
         model.addAttribute("category", categoryDto);
         model.addAttribute("product", productDto);
-        return "product-edit";
+        return "admin/product-edit";
     }
 
 

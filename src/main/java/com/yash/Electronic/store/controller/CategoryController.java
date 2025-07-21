@@ -117,13 +117,13 @@ public class CategoryController {
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("isLastPage", pageableResponse.isLastPage());
-       return "category";
+       return "admin/category";
 
     }
     @GetMapping("/edit/{categoryId}")
     public String showEditForm(@PathVariable String categoryId, Model model){
         CategoryDto categoryDto = categoryService.getSingle(categoryId);
         model.addAttribute("category",categoryDto);
-        return "edit-category";
+        return "admin/edit-category";
     }
 }

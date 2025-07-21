@@ -79,14 +79,14 @@ public class UserController {
 
     //upload user image
     @PostMapping("/image/{userId}")
-    public ResponseEntity<ImageResponse> uploadUserFile(
+    public String uploadUserFile(
         @RequestParam("userImage") MultipartFile image, @PathVariable String userId) throws IOException {
         String imageName = fileService.uploadFile(image, imageUploadPath);
         UserDto user = userServices.getUser(userId);
         user.setImageName(imageName);
         UserDto userDto = userServices.updateUser(user, userId);
         ImageResponse imageResponse = ImageResponse.builder().imageName(imageName).message("Image is inserted properly").success(true).httpStatus(HttpStatus.CREATED).build();
-        return new ResponseEntity<>(imageResponse, HttpStatus.CREATED);
+        return "redirect:/electrohub/";
 
     }
     //serve user image

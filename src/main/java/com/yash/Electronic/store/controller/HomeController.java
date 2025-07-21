@@ -273,4 +273,13 @@ public class HomeController {
         cartService.clearCart(userId);
         return "redirect:/electrohub/cart/" + userId;
     }
+
+    @GetMapping("/profile/{id}")
+    public String profile(Model model, @PathVariable("id") String userId) {
+        System.out.println(userId);
+        UserDto userDto = userServices.getUser(userId);
+        model.addAttribute("user", userDto);
+        return "user-profile"; // inside templates/
+    }
+
 }
