@@ -122,9 +122,12 @@
                         <span th:text="${session.user.name}">Profile</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="/profile">
-                            <i class="fas fa-user me-2"></i> Account
-                        </a></li>
+                        <li>
+                            <a class="dropdown-item" th:href="@{/electrohub/profile/{id}(id=${session.user.userId})}">
+                                <i class="fas fa-user me-2"></i> Account
+                            </a>
+                        </li>
+
                         <li>
                             <form th:action="@{/do-logout}" method="post" style="margin: 0; padding: 0;">
                                 <button type="submit" class="dropdown-item" style="border: none; background: none; cursor: pointer;">

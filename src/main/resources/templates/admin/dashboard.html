@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+
+    <title>Admin Portal - ShopEase</title>
+    <!-- Bootstrap CSS & FontAwesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+
+</head>
+<body>
+<!-- Import Navbar -->
+
+<div th:replace="NavBar::layout(~{::section})"></div>
+<div th:replace = "sidebar::layout(~{::section})"></div>
+<!-- Sidebar Section -->
+
+<!-- Main Content Section -->
+<main class="main-content" id="mainContent">
+    <!-- Header Section -->
+    <section class="content-header">
+        <h1>Admin Dashboard</h1>
+        <div class="user-info">
+            <i class="fas fa-user-circle"></i>
+            <span>Welcome, Admin</span>
+        </div>
+    </section>
+
+
+
+    <!-- Quick Actions Section -->
+    <section class="quick-actions-section">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="dashboard-card">
+                    <h5 class="mb-3">Quick Actions</h5>
+                    <div class="row">
+                        <div class="col-md-2 col-sm-4 col-6 mb-3">
+                            <a th:href="@{/electrohub/admin/product/show}" class="btn btn-outline-primary w-100 h-100 d-flex flex-column justify-content-center align-items-center p-3">
+                                <i class="fas fa-plus-circle fs-4 mb-2"></i>
+                                <span>Add Product</span>
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-6 mb-3">
+                            <a th:href ="@{/electrohub/admin/category/show}" class="btn btn-outline-primary w-100 h-100 d-flex flex-column justify-content-center align-items-center p-3">
+                                <i class="fas fa-plus-circle fs-4 mb-2"></i>
+                                <span>Category</span>
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-6 mb-3">
+                            <a th:href="@{/electrohub/admin/orders}" class="btn btn-outline-info w-100 h-100 d-flex flex-column justify-content-center align-items-center p-3">
+                                <i class="fas fa-list fs-4 mb-2"></i>
+                                <span>View Orders</span>
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-6 mb-3">
+                            <a th:href="@{/electrohub/admin/show-admin}" class="btn btn-outline-success w-100 h-100 d-flex flex-column justify-content-center align-items-center p-3">
+                                <i class="fas fa-users fs-4 mb-2"></i>
+                                <span>Administrator</span>
+                            </a>
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- System Status Section -->
+    <section class="system-status-section">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="dashboard-card">
+                    <h5 class="mb-3">System Status</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Server Status</span>
+                        <span class="badge bg-success">Online</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Database</span>
+                        <span class="badge bg-success">Connected</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Payment Gateway</span>
+                        <span class="badge bg-success">Active</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Email Service</span>
+                        <span class="badge bg-warning">Delayed</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="dashboard-card">
+                    <h5 class="mb-3">Today's Summary</h5>
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <h4 class="text-primary">42</h4>
+                            <small class="text-muted">New Orders</small>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="text-success">$2,547</h4>
+                            <small class="text-muted">Revenue</small>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <h4 class="text-info">18</h4>
+                            <small class="text-muted">New Users</small>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="text-warning">156</h4>
+                            <small class="text-muted">Page Views</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="dashboard-card">
+                    <h5 class="mb-3">Recent Activity</h5>
+                    <div class="activity-feed">
+                        <div class="activity-item d-flex mb-3">
+                            <div class="activity-icon bg-success text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                <i class="fas fa-plus" style="font-size: 12px;"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted">2 minutes ago</small>
+                                <p class="mb-0">New product added</p>
+                            </div>
+                        </div>
+                        <div class="activity-item d-flex mb-3">
+                            <div class="activity-icon bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                <i class="fas fa-shopping-cart" style="font-size: 12px;"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted">5 minutes ago</small>
+                                <p class="mb-0">Order #ORD-001 completed</p>
+                            </div>
+                        </div>
+                        <div class="activity-item d-flex">
+                            <div class="activity-icon bg-info text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                <i class="fas fa-user" style="font-size: 12px;"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted">10 minutes ago</small>
+                                <p class="mb-0">New user registered</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById('sidebarToggle').addEventListener('click', function() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const toggleIcon = this.querySelector('i');
+
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('expanded');
+
+        // Toggle icon
+        if (sidebar.classList.contains('collapsed')) {
+            toggleIcon.classList.remove('fa-chevron-left');
+            toggleIcon.classList.add('fa-chevron-right');
+        } else {
+            toggleIcon.classList.remove('fa-chevron-right');
+            toggleIcon.classList.add('fa-chevron-left');
+        }
+    });
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            // Remove active class from all links
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            // Add active class to clicked link
+            this.classList.add('active');
+        });
+    });
+</script>
+</body>
+</html>

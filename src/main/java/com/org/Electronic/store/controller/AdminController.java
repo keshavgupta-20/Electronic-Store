@@ -47,7 +47,7 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public String dashboard(){
-        return "dashboard";
+        return "admin/dashboard";
     }
 
 
@@ -56,7 +56,7 @@ public class AdminController {
        List<ProductDto> product = new ArrayList<>();
 
 
-        return "admin-product";
+        return "admin/admin-product";
     }
     @GetMapping("/orders")
     public String  getOrders(
@@ -74,33 +74,18 @@ public class AdminController {
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("isLastPage", orderDtos.isLastPage());
-        return "pending-orders";
+        return "admin/pending-orders";
     }
 
-    @GetMapping("/inventry")
-    public  String inventry(){
-        return "inventry";
-    }
 
-    @GetMapping("/customer")
-    public String totaluser(){
-        return "show-users";
-    }
 
-    @GetMapping("/promotion")
-    public String dealsOnProduct(){
-        return "deal-edit";
-    }
 
-    @GetMapping("/adminview")
-    public String adminView(){
-        return "admin-view";
-    }
+
     @GetMapping("/category/add-category")
     public String showAddCategoryForm(Model model) {
         CategoryDto category = new CategoryDto();
         model.addAttribute("category", category);
-        return "add-category";
+        return "admin/add-category";
     }
 
     @GetMapping("/user/{userId}")
@@ -120,7 +105,7 @@ public class AdminController {
         List<OrderItemDto> orderItemDto = orderService.orderByOrderItem(orderId);
         model.addAttribute("orderItem", orderItemDto);
 
-       return "orderDetail";
+       return "admin/orderDetail";
 
     }
 
@@ -147,7 +132,7 @@ public class AdminController {
         model.addAttribute("admins", userDtos);
         System.out.println(userDtos.get(0).getName());
         System.out.println(userDtos.get(0).getUserId());
-        return "admin-view";
+        return "admin/admin-view";
     }
 
     @GetMapping("/delete/{userId}")
@@ -160,7 +145,7 @@ public class AdminController {
     public  String addAdmin(Model model){
         UserDto userDto = new UserDto();
         model.addAttribute("user", userDto);
-        return "new-admin";
+        return "admin/new-admin";
     }
 
     @PostMapping("/user/add")
@@ -170,7 +155,7 @@ public class AdminController {
         Role normalRole = roleRepo.findByName("ROLE_ADMIN").orElse(null);
         userDto.setImageName("abc.jpg");
         if (result.hasErrors()) {
-            return "add-admin";
+            return "admin/new-admin";
         }
         userServices.createAdmin(userDto);
         return "redirect:/electrohub/admin/show-admin";

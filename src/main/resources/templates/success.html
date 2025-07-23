@@ -1,11 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>Order Success</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<h1>hello</h1>
+
+<!-- NavBar with section replacement -->
+<div th:replace="NavBar::layout(~{::section})"></div>
+
+<section class="bg-light min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="card shadow-lg p-5 text-center">
+        <div class="mb-4">
+            <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+        </div>
+        <h1 class="text-success">Order Placed Successfully!</h1>
+        <p class="mt-3 fs-5">Thank you for shopping with us. Your order will be delivered soon.</p>
+        <a th:href="@{/electrohub/}" class="btn btn-primary mt-4">Back to Home</a>
+    </div>
+</section>
 
 </body>
 </html>

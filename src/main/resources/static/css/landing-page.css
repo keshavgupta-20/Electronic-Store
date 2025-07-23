@@ -1,4 +1,4 @@
-   /* Carousel styling for screen fit */
+  /* Carousel styling for screen fit */
        .carousel-container {
            height: 65vh; /* Increased height for larger carousel */
            max-height: 500px; /* Increased maximum height */
@@ -34,12 +34,13 @@
            pointer-events: none;
        }
 
-
+       /* Category card hover effect */
        .category-card {
            transition: transform 0.3s ease, box-shadow 0.3s ease;
            border: none;
            border-radius: 10px;
        }
+
        .category-card:hover {
            transform: translateY(-5px);
            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
@@ -73,16 +74,13 @@
                max-height: 300px;
            }
        }
-        *{
-         box-sizing: border-box;
-       }
-      .five-per-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1.5rem;
-        justify-content: space-between;
-        padding: 1rem 0;
-      }
+       .five-per-row {
+       display: flex;
+       flex-wrap: wrap;
+       gap: 1.5rem;
+       justify-content: space-between;
+       padding: 1rem 0;
+   }
 
    .five-per-row .category-card-wrapper {
        flex: 0 0 calc(20% - 1.2rem);

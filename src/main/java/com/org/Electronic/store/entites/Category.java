@@ -22,7 +22,7 @@ public class Category {
     @NotBlank
     @Column(name = "category_title", length = 20, nullable = false)
     private String title;
-    @Column(name = "category_Desc", length = 50)
+    @Column(name = "category_Desc")
     private String description;
     private String coverPage;
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
